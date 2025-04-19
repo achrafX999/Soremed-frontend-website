@@ -13,8 +13,7 @@ const HomePage: React.FC = () => {
     const filtered = medications.filter(med => {
       // Convertir le terme de recherche et le nom du médicament en minuscules pour une comparaison insensible à la casse
       const termMatch = 
-        med.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-        med.genericName.toLowerCase().includes(searchTerm.toLowerCase());
+        med.name.toLowerCase().includes(searchTerm.toLowerCase())
       
       // Si une quantité est saisie, vérifie que le médicament possède au moins cette quantité disponible
       const quantityMatch = searchQuantity

@@ -1,7 +1,6 @@
 export interface Medication {
   id: string;
   name: string;
-  genericName: string;
   dosage: string;
   form: string;
   quantity: number;

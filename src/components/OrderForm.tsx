@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { Plus, Minus, ShoppingCart } from 'lucide-react';
 import { medications } from '../data/medications';
-import { Medication, OrderItem } from '../types';
+import { OrderItem } from '../types';
 
 interface OrderFormProps {
   onSubmit: (items: OrderItem[]) => void;
@@ -46,6 +46,16 @@ const OrderForm: React.FC<OrderFormProps> = ({ onSubmit }) => {
     setSelectedItems(items => items.filter(item => item.medicationId !== medicationId));
   };
 
+  const handleQuantityChange = (medicationId: string, newQuantity: number) => {
+    setSelectedItems(items =>
+      items.map(item =>
+        item.medicationId === medicationId
+          ? { ...item, quantity: newQuantity }
+          : item
+      )
+    );
+  };
+
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     onSubmit(selectedItems);
@@ -60,6 +70,7 @@ const OrderForm: React.FC<OrderFormProps> = ({ onSubmit }) => {
   return (
     <div className="bg-white rounded-lg shadow-md p-6">
       <form onSubmit={handleSubmit} className="space-y-6">
+        {/* Section de sélection du médicament et de la quantité */}
         <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
           <div>
             <label className="block text-sm font-medium text-gray-700 mb-2">
@@ -119,36 +130,56 @@ const OrderForm: React.FC<OrderFormProps> = ({ onSubmit }) => {
           </div>
         </div>
 
+        {/* Récapitulatif de la commande sous forme de tableau */}
         {selectedItems.length > 0 && (
           <div className="mt-6">
             <h3 className="text-lg font-medium text-gray-900 mb-4">Order Summary</h3>
-            <div className="space-y-4">
-              {selectedItems.map(item => {
-                const medication = medications.find(med => med.id === item.medicationId);
-                return (
-                  <div key={item.medicationId} className="flex justify-between items-center bg-gray-50 p-4 rounded-md">
-                    <div>
-                      <p className="font-medium">{medication?.name}</p>
-                      <p className="text-sm text-gray-500">
-                        Quantity: {item.quantity} × ${medication?.price}
-                      </p>
-                    </div>
-                    <div className="flex items-center space-x-4">
-                      <p className="font-medium">
+            <table className="min-w-full border">
+              <thead>
+                <tr className="bg-gray-100">
+                  <th className="px-4 py-2 border">Product</th>
+                  <th className="px-4 py-2 border">Quantity Wanted</th>
+                  <th className="px-4 py-2 border">Quantity Delivered</th>
+                  <th className="px-4 py-2 border">Price</th>
+                  <th className="px-4 py-2 border">Actions</th>
+                </tr>
+              </thead>
+              <tbody>
+                {selectedItems.map(item => {
+                  const medication = medications.find(med => med.id === item.medicationId);
+                  return (
+                    <tr key={item.medicationId}>
+                      <td className="px-4 py-2 border">{medication?.name}</td>
+                      <td className="px-4 py-2 border">
+                        <input
+                          type="number"
+                          min="1"
+                          value={item.quantity}
+                          onChange={(e) => handleQuantityChange(item.medicationId, Math.max(1, parseInt(e.target.value) || 1))}
+                          className="w-16 text-center border border-gray-300 rounded-md"
+                        />
+                      </td>
+                      <td className="px-4 py-2 border text-center">
+                        {/* Pour une démonstration, la quantité livrée est initialisée à 0 */}
+                        0
+                      </td>
+                      <td className="px-4 py-2 border">
                         ${((medication?.price || 0) * item.quantity).toFixed(2)}
-                      </p>
-                      <button
-                        type="button"
-                        onClick={() => handleRemoveItem(item.medicationId)}
-                        className="text-red-600 hover:text-red-800"
-                      >
-                        Remove
-                      </button>
-                    </div>
-                  </div>
-                );
-              })}
-            </div>
+                      </td>
+                      <td className="px-4 py-2 border">
+                        <button
+                          type="button"
+                          onClick={() => handleRemoveItem(item.medicationId)}
+                          className="bg-red-600 text-white px-2 py-1 rounded-md hover:bg-red-700 transition-colors"
+                        >
+                          Remove
+                        </button>
+                      </td>
+                    </tr>
+                  );
+                })}
+              </tbody>
+            </table>
 
             <div className="mt-6 flex justify-between items-center">
               <p className="text-lg font-medium">Total:</p>

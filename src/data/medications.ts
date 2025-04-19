@@ -4,7 +4,6 @@ export const medications: Medication[] = [
   {
     id: "med1",
     name: "Amoxicillin",
-    genericName: "Amoxicillin",
     dosage: "500mg",
     form: "Capsule",
     quantity: 100,
@@ -15,7 +14,6 @@ export const medications: Medication[] = [
   {
     id: "med2",
     name: "Lisinopril",
-    genericName: "Lisinopril",
     dosage: "10mg",
     form: "Tablet",
     quantity: 75,

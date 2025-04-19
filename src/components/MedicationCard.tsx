@@ -13,7 +13,7 @@ const MedicationCard: React.FC<MedicationCardProps> = ({ medication, onOrder }) 
       <div className="flex justify-between items-start">
         <div>
           <h3 className="text-xl font-semibold text-gray-900">{medication.name}</h3>
-          <p className="text-sm text-gray-500">{medication.genericName}</p>
+          {/*<p className="text-sm text-gray-500">{medication.genericName}</p>*/}
         </div>
         <Pills className="h-6 w-6 text-blue-600" />
       </div>
@@ -24,7 +24,9 @@ const MedicationCard: React.FC<MedicationCardProps> = ({ medication, onOrder }) 
           <span>{medication.dosage} • {medication.form}</span>
         </div>
         
-        
+        <p className="text-sm text-gray-600">
+          Manufacturer: {medication.manufacturer}
+        </p>
         
         <div className="flex justify-between items-center mt-4">
           <div>
