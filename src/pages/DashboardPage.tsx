@@ -21,7 +21,7 @@ const DashboardPage: React.FC = () => {
 
   const stats = [
     { title: 'Orders per Day', value: '700', icon: Package2, color: 'bg-blue-500' },
-    { title: 'Cumulative Payments', value: '$12,500', icon: TrendingUp, color: 'bg-green-500' },
+    { title: 'Cumulative Payments', value: 'DH12,500', icon: TrendingUp, color: 'bg-green-500' },
     { title: 'Orders in Progress', value: '23', icon: Clock, color: 'bg-yellow-500' },
     { title: 'Completed Orders', value: '540', icon: CheckCircle, color: 'bg-purple-500' },
   ];

@@ -1,29 +1,24 @@
 // src/App.tsx
-import React, { useContext } from 'react';
-import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
+import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
+import { AuthProvider } from './contexts/AuthContext';
+import { RequireAuth } from './components/RequireAuth';
+
 import Sidebar from './components/Sidebar';
 import Header from './components/Header';
+
 import HomePage from './pages/HomePage';
 import OrderPage from './pages/OrderPage';
 import TrackingPage from './pages/TrackingPage';
 import DashboardPage from './pages/DashboardPage';
-import LoginPage from './pages/LoginPage';           // à créer
-import { AuthProvider, AuthContext } from './contexts/AuthContext';
+import LoginPage from './pages/LoginPage';
 
-
-// Composant pour protéger une route
-function PrivateRoute({ children }: { children: React.ReactNode }) {
-  const auth = useContext(AuthContext);
-  if (!auth) throw new Error('AuthContext non initialisé');
-  return auth.user 
-    ? <>{children}</> 
-    : <Navigate to="/login" replace />;
-}
-
+// Nouvelles pages :
+import RegistrationPage from './pages/RegistrationPage';
+import NewsPage from './pages/NewsPage';
 
 export default function App() {
   return (
-    <AuthProvider>                         {/* ❶ AuthProvider autour de tout */}
+    <AuthProvider>
       <Router>
         <div className="min-h-screen bg-gray-50">
           <Sidebar />
@@ -31,41 +26,48 @@ export default function App() {
             <Header />
             <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
               <Routes>
-                {/* ❷ Route publique de login */}
+                {/* Pages publiques */}
                 <Route path="/login" element={<LoginPage />} />
+                <Route path="/register" element={<RegistrationPage />} />
 
-                {/* ❸ Toutes les autres routes sont privées */}
-                <Route 
-                  path="/" 
+                {/* Pages protégées (nécessitent d'être connecté) */}
+                <Route
+                  path="/"
                   element={
-                    <PrivateRoute>
+                    <RequireAuth>
                       <HomePage />
-                    </PrivateRoute>
-                  } 
+                    </RequireAuth>
+                  }
                 />
-                <Route 
-                  path="/order" 
+                <Route
+                  path="/order"
                   element={
-                    <PrivateRoute>
+                    <RequireAuth>
                       <OrderPage />
-                    </PrivateRoute>
-                  } 
+                    </RequireAuth>
+                  }
                 />
-                <Route 
-                  path="/tracking" 
+                <Route path="/tracking" element={
+                <RequireAuth><TrackingPage/></RequireAuth>
+              } />
+              <Route path="/tracking/:orderId" element={
+                <RequireAuth><TrackingPage/></RequireAuth>
+              } />
+                <Route
+                  path="/dashboard"
                   element={
-                    <PrivateRoute>
-                      <TrackingPage />
-                    </PrivateRoute>
-                  } 
-                />
-                <Route 
-                  path="/dashboard" 
-                  element={
-                    <PrivateRoute>
+                    <RequireAuth>
                       <DashboardPage />
-                    </PrivateRoute>
-                  } 
+                    </RequireAuth>
+                  }
+                />
+                <Route
+                  path="/news"
+                  element={
+                    <RequireAuth>
+                      <NewsPage />
+                    </RequireAuth>
+                  }
                 />
               </Routes>
             </main>

@@ -1,178 +1,215 @@
-import React, { useState } from 'react';
+// src/components/OrderForm.tsx
+import { useState, useContext, useEffect } from 'react';
 import { Plus, Minus, ShoppingCart } from 'lucide-react';
-import { medications } from '../data/medications';
-import { OrderItem } from '../types';
+import { useNavigate } from 'react-router-dom';
+import api from '../api/axios';
+import { Medication, OrderItem } from '../types';
+import { AuthContext } from '../contexts/AuthContext';
+import { toast } from 'react-hot-toast';
 
 interface OrderFormProps {
-  onSubmit: (items: OrderItem[]) => void;
+  onSuccess?: () => void;
 }
 
-const OrderForm: React.FC<OrderFormProps> = ({ onSubmit }) => {
+const OrderForm: React.FC<OrderFormProps> = ({ onSuccess }) => {
+  const navigate = useNavigate();
+  const auth = useContext(AuthContext);
+  if (!auth) throw new Error('AuthContext non initialisé');
+  const { user } = auth;
+
+  const [medications, setMedications] = useState<Medication[]>([]);
   const [selectedItems, setSelectedItems] = useState<OrderItem[]>([]);
-  const [selectedMedId, setSelectedMedId] = useState<string>('');
+  const [selectedMedId, setSelectedMedId] = useState<number | ''>('');
   const [quantity, setQuantity] = useState<number>(1);
 
+  // 1. Charger tous les médicaments (grand pageSize)
+  useEffect(() => {
+    api
+      .get<{ content: Medication[] }>('/medications', { params: { page: 0, size: 1000 } })
+      .then(({ data }) => setMedications(data.content))
+      .catch(() => toast.error('Impossible de charger les médicaments'));
+  }, []);
+
   const handleAddItem = () => {
-    if (!selectedMedId || quantity <= 0) return;
+    if (selectedMedId === '' || quantity <= 0) return;
+    const med = medications.find(m => m.id === selectedMedId);
+    if (!med) return;
 
-    const medication = medications.find(med => med.id === selectedMedId);
-    if (!medication) return;
-
-    const existingItem = selectedItems.find(item => item.medicationId === selectedMedId);
-    if (existingItem) {
-      setSelectedItems(items =>
-        items.map(item =>
-          item.medicationId === selectedMedId
-            ? { ...item, quantity: item.quantity + quantity }
-            : item
-        )
-      );
-    } else {
-      setSelectedItems(items => [
+    setSelectedItems(items => {
+      const exist = items.find(i => i.medicationId === selectedMedId);
+      if (exist) {
+        return items.map(i =>
+          i.medicationId === selectedMedId
+            ? { ...i, quantity: i.quantity + quantity }
+            : i
+        );
+      }
+      return [
         ...items,
-        {
-          medicationId: selectedMedId,
-          quantity,
-          price: medication.price
-        }
-      ]);
-    }
+        { medicationId: selectedMedId, quantity, price: med.price }
+      ];
+    });
 
     setSelectedMedId('');
     setQuantity(1);
   };
 
-  const handleRemoveItem = (medicationId: string) => {
-    setSelectedItems(items => items.filter(item => item.medicationId !== medicationId));
+  const handleRemoveItem = (medicationId: number) => {
+    setSelectedItems(items => items.filter(i => i.medicationId !== medicationId));
   };
 
-  const handleQuantityChange = (medicationId: string, newQuantity: number) => {
+  const handleQuantityChange = (medicationId: number, newQty: number) => {
     setSelectedItems(items =>
-      items.map(item =>
-        item.medicationId === medicationId
-          ? { ...item, quantity: newQuantity }
-          : item
+      items.map(i =>
+        i.medicationId === medicationId
+          ? { ...i, quantity: newQty }
+          : i
       )
     );
   };
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    onSubmit(selectedItems);
-    setSelectedItems([]);
+    if (!user) {
+      toast.error('Vous devez être connecté pour passer commande');
+      return;
+    }
+    if (selectedItems.length === 0) {
+      toast.error('Veuillez ajouter au moins un médicament');
+      return;
+    }
+    try {
+      // 2. Appel POST /api/orders?userId=...
+      const res = await api.post(
+        '/orders',
+        selectedItems,
+        { params: { userId: user.id } }
+      );
+      const created = res.data as { id: number };
+      toast.success('Commande passée avec succès');
+      // 3. Redirige vers /tracking/:orderId
+      navigate(`/tracking/${created.id}`);
+      onSuccess?.();
+    } catch (err) {
+      console.error(err);
+      toast.error('Erreur lors de la création de la commande');
+    }
   };
 
-  const total = selectedItems.reduce((sum, item) => {
-    const medication = medications.find(med => med.id === item.medicationId);
-    return sum + (medication?.price || 0) * item.quantity;
-  }, 0);
+  const total = selectedItems.reduce((sum, item) => sum + item.price * item.quantity, 0);
 
   return (
     <div className="bg-white rounded-lg shadow-md p-6">
       <form onSubmit={handleSubmit} className="space-y-6">
-        {/* Section de sélection du médicament et de la quantité */}
+        {/* Sélection du médicament */}
         <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-2">
-              Select Medication
-            </label>
+            <label className="block text-sm font-medium mb-2">Médicament</label>
             <select
               value={selectedMedId}
-              onChange={(e) => setSelectedMedId(e.target.value)}
-              className="w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500"
+              onChange={e => {
+                const id = parseInt(e.target.value, 10);
+                setSelectedMedId(isNaN(id) ? '' : id);
+              }}
+              className="w-full rounded-md border-gray-300"
             >
-              <option value="">Choose a medication</option>
+              <option value="">Choisissez...</option>
               {medications.map(med => (
                 <option key={med.id} value={med.id}>
-                  {med.name} - ${med.price}
+                  {med.name} – {med.quantity} en stock
                 </option>
               ))}
             </select>
           </div>
 
+          {/* Quantité */}
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-2">
-              Quantity
-            </label>
+            <label className="block text-sm font-medium mb-2">Quantité</label>
             <div className="flex items-center">
               <button
                 type="button"
+                aria-label="Diminuer quantité"
                 onClick={() => setQuantity(q => Math.max(1, q - 1))}
-                className="p-2 bg-gray-100 rounded-l-md hover:bg-gray-200"
+                className="px-2 bg-gray-100 rounded-l-md hover:bg-gray-200"
               >
                 <Minus className="h-4 w-4" />
               </button>
               <input
                 type="number"
-                min="1"
+                min={1}
                 value={quantity}
-                onChange={(e) => setQuantity(Math.max(1, parseInt(e.target.value) || 1))}
+                onChange={e => {
+                  const v = parseInt(e.target.value, 10);
+                  setQuantity(isNaN(v) ? 1 : v);
+                }}
                 className="w-20 text-center border-y border-gray-300"
               />
               <button
                 type="button"
+                aria-label="Augmenter quantité"
                 onClick={() => setQuantity(q => q + 1)}
-                className="p-2 bg-gray-100 rounded-r-md hover:bg-gray-200"
+                className="px-2 bg-gray-100 rounded-r-md hover:bg-gray-200"
               >
                 <Plus className="h-4 w-4" />
               </button>
             </div>
           </div>
 
+          {/* Bouton Ajouter */}
           <div className="flex items-end">
             <button
               type="button"
               onClick={handleAddItem}
-              className="w-full bg-blue-600 text-white px-4 py-2 rounded-md hover:bg-blue-700 transition-colors"
+              className="w-full bg-blue-600 text-white py-2 rounded-md hover:bg-blue-700"
             >
-              Add to Order
+              Ajouter
             </button>
           </div>
         </div>
 
-        {/* Récapitulatif de la commande sous forme de tableau */}
+        {/* Récapitulatif de la commande */}
         {selectedItems.length > 0 && (
-          <div className="mt-6">
-            <h3 className="text-lg font-medium text-gray-900 mb-4">Order Summary</h3>
-            <table className="min-w-full border">
+          <>
+            <table className="w-full mt-6 border">
               <thead>
                 <tr className="bg-gray-100">
-                  <th className="px-4 py-2 border">Product</th>
-                  <th className="px-4 py-2 border">Quantity Wanted</th>
-                  <th className="px-4 py-2 border">Quantity Delivered</th>
-                  <th className="px-4 py-2 border">Price</th>
-                  <th className="px-4 py-2 border">Actions</th>
+                  <th className="p-2 text-left">Produit</th>
+                  <th className="p-2 text-center">Quantité</th>
+                  <th className="p-2 text-right">Prix</th>
+                  <th className="p-2 text-center">Actions</th>
                 </tr>
               </thead>
               <tbody>
                 {selectedItems.map(item => {
-                  const medication = medications.find(med => med.id === item.medicationId);
+                  const med = medications.find(m => m.id === item.medicationId)!;
                   return (
                     <tr key={item.medicationId}>
-                      <td className="px-4 py-2 border">{medication?.name}</td>
-                      <td className="px-4 py-2 border">
+                      <td className="p-2">{med.name}</td>
+                      <td className="p-2 text-center">
                         <input
                           type="number"
-                          min="1"
+                          min={1}
                           value={item.quantity}
-                          onChange={(e) => handleQuantityChange(item.medicationId, Math.max(1, parseInt(e.target.value) || 1))}
-                          className="w-16 text-center border border-gray-300 rounded-md"
+                          onChange={e =>
+                            handleQuantityChange(
+                              item.medicationId,
+                              Math.max(1, parseInt(e.target.value, 10) || 1)
+                            )
+                          }
+                          className="w-16 text-center border rounded"
                         />
                       </td>
-                      <td className="px-4 py-2 border text-center">
-                        {/* Pour une démonstration, la quantité livrée est initialisée à 0 */}
-                        0
+                      <td className="p-2 text-right">
+                        {(item.price * item.quantity).toFixed(2)}DH
                       </td>
-                      <td className="px-4 py-2 border">
-                        ${((medication?.price || 0) * item.quantity).toFixed(2)}
-                      </td>
-                      <td className="px-4 py-2 border">
+                      <td className="p-2 text-center">
                         <button
                           type="button"
+                          aria-label="Supprimer article"
                           onClick={() => handleRemoveItem(item.medicationId)}
-                          className="bg-red-600 text-white px-2 py-1 rounded-md hover:bg-red-700 transition-colors"
+                          className="text-red-600 hover:text-red-800"
                         >
-                          Remove
+                          Supprimer
                         </button>
                       </td>
                     </tr>
@@ -181,19 +218,20 @@ const OrderForm: React.FC<OrderFormProps> = ({ onSubmit }) => {
               </tbody>
             </table>
 
-            <div className="mt-6 flex justify-between items-center">
-              <p className="text-lg font-medium">Total:</p>
-              <p className="text-2xl font-bold text-blue-600">${total.toFixed(2)}</p>
+            <div className="flex justify-between items-center mt-4">
+              <span className="font-medium">Total :</span>
+              <span className="font-bold text-lg">
+                {total.toFixed(2)}DH
+              </span>
             </div>
 
             <button
               type="submit"
-              className="mt-6 w-full bg-green-600 text-white px-6 py-3 rounded-md hover:bg-green-700 transition-colors flex items-center justify-center"
+              className="mt-4 w-full bg-green-600 text-white py-2 rounded-md flex justify-center items-center hover:bg-green-700"
             >
-              <ShoppingCart className="h-5 w-5 mr-2" />
-              Place Order
+              <ShoppingCart className="mr-2" /> Passer la commande
             </button>
-          </div>
+          </>
         )}
       </form>
     </div>

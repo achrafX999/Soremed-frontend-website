@@ -1,16 +1,18 @@
+// src/types/index.ts
+
 export interface Medication {
-  id: string;
+  id: number;
   name: string;
-  dosage: string;
-  form: string;
-  quantity: number;
-  manufacturer: string;
-  price: number;
   description: string;
+  dosage?: string;
+  form?: string;
+  manufacturer?: string;
+  price: number;
+  quantity: number;
 }
 
 export interface Order {
-  id: string;
+  id: number; // Changed from string to number to match backend
   date: string;
   status: 'in_progress' | 'completed' | 'canceled';
   items: OrderItem[];
@@ -18,7 +20,7 @@ export interface Order {
 }
 
 export interface OrderItem {
-  medicationId: string;
+  medicationId: number; // Changed from string to number to match backend IDs
   quantity: number;
   price: number;
 }
@@ -26,4 +28,4 @@ export interface OrderItem {
 export type ChartData = {
   labels: string[];
   values: number[];
-}
+};

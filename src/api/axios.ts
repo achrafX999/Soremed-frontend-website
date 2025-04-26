@@ -1,7 +1,7 @@
 import axios from 'axios';
 
 const api = axios.create({
-  baseURL: import.meta.env.VITE_API_BASE_URL,  // ex: "http://localhost:8080/api"
+  baseURL: import.meta.env.VITE_API_BASE_URL,  //"http://localhost:8080/api" le Url du serveur backend est pris dans le fichier .env
   headers: { 'Content-Type': 'application/json' },
 });
 

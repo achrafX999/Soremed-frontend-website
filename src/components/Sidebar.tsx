@@ -1,6 +1,6 @@
 import React from 'react';
 import { Link, useLocation } from 'react-router-dom';
-import { Pill, ClipboardList, Activity, LayoutDashboard } from 'lucide-react';
+import { Pill, ClipboardList, Activity, LayoutDashboard, Newspaper, UserPlus } from 'lucide-react';
 
 const Sidebar: React.FC = () => {
   const location = useLocation();
@@ -11,7 +11,7 @@ const Sidebar: React.FC = () => {
       <div className="p-6">
         <Link to="/" className="flex items-center">
           <Pill className="h-8 w-8 text-blue-600" />
-          <span className="ml-2 text-xl font-bold text-gray-900">MedTrack</span>
+          <span className="ml-2 text-xl font-bold text-gray-900">Soremed</span>
         </Link>
       </div>
       
@@ -54,6 +54,26 @@ const Sidebar: React.FC = () => {
         >
           <LayoutDashboard className="h-5 w-5 mr-3" />
           Dashboard
+        </Link>
+
+        <Link
+          to="/news"
+          className={`flex items-center px-6 py-3 text-sm font-medium ${
+            isActive('/news') ? 'bg-blue-50 text-blue-600 border-r-4 border-blue-600' : 'text-gray-600 hover:bg-gray-50'
+          }`}
+        >
+          <Newspaper className="h-5 w-5 mr-3" />
+          News & Updates
+        </Link>
+
+        <Link
+          to="/register"
+          className={`flex items-center px-6 py-3 text-sm font-medium ${
+            isActive('/register') ? 'bg-blue-50 text-blue-600 border-r-4 border-blue-600' : 'text-gray-600 hover:bg-gray-50'
+          }`}
+        >
+          <UserPlus className="h-5 w-5 mr-3" />
+          Register
         </Link>
       </nav>
     </div>
