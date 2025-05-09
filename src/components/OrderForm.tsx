@@ -46,8 +46,14 @@ const OrderForm: React.FC<OrderFormProps> = ({ onSuccess }) => {
       }
       return [
         ...items,
-        { medicationId: selectedMedId, quantity, price: med.price }
+        {
+          medicationId: med.id,
+          medicationName: med.name,   // ← nouveau
+          quantity,
+          price:       med.price
+        }
       ];
+      
     });
 
     setSelectedMedId('');
@@ -160,7 +166,7 @@ const OrderForm: React.FC<OrderFormProps> = ({ onSuccess }) => {
             <button
               type="button"
               onClick={handleAddItem}
-              className="w-full bg-blue-600 text-white py-2 rounded-md hover:bg-blue-700"
+              className="w-full bg-green-600 text-white py-2 rounded-md hover:bg-green-700"
             >
               Ajouter
             </button>

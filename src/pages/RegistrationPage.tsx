@@ -28,7 +28,7 @@ const RegistrationPage: React.FC = () => {
     <div className="max-w-2xl mx-auto">
       <div className="bg-white rounded-lg shadow-md p-8">
         <div className="flex items-center mb-8">
-          <UserPlus className="h-8 w-8 text-blue-600 mr-3" />
+          <UserPlus className="h-8 w-8 text-green-600 mr-3" />
           <h1 className="text-3xl font-bold text-gray-900">Registration</h1>
         </div>
 
@@ -44,7 +44,7 @@ const RegistrationPage: React.FC = () => {
                 name="firstName"
                 value={formData.firstName}
                 onChange={handleChange}
-                className="w-full px-4 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                className="w-full px-4 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-green-500 focus:border-transparent"
                 required
               />
             </div>
@@ -59,7 +59,7 @@ const RegistrationPage: React.FC = () => {
                 name="lastName"
                 value={formData.lastName}
                 onChange={handleChange}
-                className="w-full px-4 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                className="w-full px-4 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-green-500 focus:border-transparent"
                 required
               />
             </div>
@@ -75,7 +75,7 @@ const RegistrationPage: React.FC = () => {
               name="iceNumber"
               value={formData.iceNumber}
               onChange={handleChange}
-              className="w-full px-4 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+              className="w-full px-4 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-green-500 focus:border-transparent"
               required
             />
           </div>
@@ -90,7 +90,7 @@ const RegistrationPage: React.FC = () => {
               name="address"
               value={formData.address}
               onChange={handleChange}
-              className="w-full px-4 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+              className="w-full px-4 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-green-500 focus:border-transparent"
               required
             />
           </div>
@@ -105,7 +105,7 @@ const RegistrationPage: React.FC = () => {
               name="phone"
               value={formData.phone}
               onChange={handleChange}
-              className="w-full px-4 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+              className="w-full px-4 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-green-500 focus:border-transparent"
               required
             />
           </div>
@@ -120,14 +120,14 @@ const RegistrationPage: React.FC = () => {
               name="openingDate"
               value={formData.openingDate}
               onChange={handleChange}
-              className="w-full px-4 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+              className="w-full px-4 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-green-500 focus:border-transparent"
               required
             />
           </div>
 
           <button
             type="submit"
-            className="w-full bg-blue-600 text-white py-3 px-6 rounded-md hover:bg-blue-700 transition-colors flex items-center justify-center"
+            className="w-full bg-green-600 text-white py-3 px-6 rounded-md hover:bg-green-700 transition-colors flex items-center justify-center"
           >
             <UserPlus className="h-5 w-5 mr-2" />
             Register

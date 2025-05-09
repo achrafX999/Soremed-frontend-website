@@ -14,7 +14,7 @@ const OrderList: React.FC<OrderListProps> = ({ orders, onStatusChange }) => {
       case 'completed':
         return <CheckCircle className="h-5 w-5 text-green-500" />;
       case 'in_progress':
-        return <Clock className="h-5 w-5 text-blue-500" />;
+        return <Clock className="h-5 w-5 text-green-500" />;
       case 'canceled':
         return <XCircle className="h-5 w-5 text-red-500" />;
       default:
@@ -27,7 +27,7 @@ const OrderList: React.FC<OrderListProps> = ({ orders, onStatusChange }) => {
       case 'completed':
         return 'bg-green-100 text-green-800';
       case 'in_progress':
-        return 'bg-blue-100 text-blue-800';
+        return 'bg-green-100 text-green-800';
       case 'canceled':
         return 'bg-red-100 text-red-800';
       default:
@@ -56,19 +56,13 @@ const OrderList: React.FC<OrderListProps> = ({ orders, onStatusChange }) => {
                   </h3>
                 </div>
                 <p className="text-sm text-gray-500 mt-1">
-                  Placed on {new Date(order.date).toLocaleDateString()}
+                  Placed on {new Date(order.orderDate).toLocaleDateString()}
                 </p>
               </div>
-              <div
-                className={`px-3 py-1 rounded-full text-sm font-medium ${getStatusColor(
-                  order.status
-                )}`}
-              >
+              <div className={`px-3 py-1 rounded-full text-sm font-medium ${getStatusColor(order.status)}`}>
                 <div className="flex items-center space-x-1">
                   {getStatusIcon(order.status)}
-                  <span className="capitalize">
-                    {order.status.replace('_', ' ')}
-                  </span>
+                  <span className="capitalize">{order.status.replace('_', ' ')}</span>
                 </div>
               </div>
             </div>
@@ -79,19 +73,17 @@ const OrderList: React.FC<OrderListProps> = ({ orders, onStatusChange }) => {
                 Order Items:
               </h4>
               <div className="space-y-2">
-                {order.items.map((item, idx) => (
-                  <div
-                    key={idx}
-                    className="flex justify-between text-sm"
-                  >
-                    <span className="text-gray-600">
-                      {item.medicationId} × {item.quantity}
-                    </span>
-                    <span className="font-medium">
-                      DH{(item.price * item.quantity).toFixed(2)}
-                    </span>
-                  </div>
-                ))}
+              {order.items.map((item, idx) => (
+              <div key={idx} className="flex justify-between text-sm">
+                <span className="text-gray-600">
+                  {item.medicationName} × {item.quantity}
+                </span>
+                <span className="font-medium">
+                  DH{(item.price * item.quantity).toFixed(2)}
+                </span>
+              </div>
+            ))}
+
               </div>
             </div>
 
@@ -99,7 +91,7 @@ const OrderList: React.FC<OrderListProps> = ({ orders, onStatusChange }) => {
             <div className="mt-4 pt-4 border-t border-gray-200">
               <div className="flex justify-between items-center">
                 <span className="font-medium">Total Amount:</span>
-                <span className="text-lg font-bold text-blue-600">
+                <span className="text-lg font-bold text-green-600">
                   DH{total.toFixed(2)}
                 </span>
               </div>

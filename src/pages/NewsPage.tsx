@@ -76,14 +76,14 @@ const NewsPage: React.FC = () => {
             <img src={item.image} alt={item.title} className="w-full h-48 object-cover" />
             <div className="p-6">
               <div className="flex justify-between items-start">
-                <span className="inline-block px-3 py-1 text-sm font-semibold text-blue-600 bg-blue-100 rounded-full">
+                <span className="inline-block px-3 py-1 text-sm font-semibold text-green-600 bg-green-100 rounded-full">
                   {item.category}
                 </span>
                 <span className="text-sm text-gray-500">{item.date}</span>
               </div>
               <h3 className="mt-4 text-xl font-semibold text-gray-900">{item.title}</h3>
               <p className="mt-2 text-gray-600">{item.description}</p>
-              <button className="mt-4 text-blue-600 hover:text-blue-800 font-medium">
+              <button className="mt-4 text-green-600 hover:text-green-800 font-medium">
                 Read more →
               </button>
             </div>

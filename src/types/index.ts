@@ -13,16 +13,17 @@ export interface Medication {
 
 export interface Order {
   id: number; // Changed from string to number to match backend
-  date: string;
+  orderDate: string;
   status: 'in_progress' | 'completed' | 'canceled';
   items: OrderItem[];
   total: number;
 }
 
 export interface OrderItem {
-  medicationId: number; // Changed from string to number to match backend IDs
+  medicationId: number;
+  medicationName: string;  // ← ajouté
   quantity: number;
-  price: number;
+  price: number;           // prix unitaire
 }
 
 export type ChartData = {

@@ -1,4 +1,4 @@
-import React, {
+import {
   createContext,
   ReactNode,
   useState,
@@ -26,14 +26,18 @@ export const AuthProvider: FC<AuthProviderProps> = ({ children }) => {
   const [loading, setLoading] = useState<boolean>(true);
 
   useEffect(() => {
-    const auth = localStorage.getItem('auth');
-    if (!auth) {
+    const stored = localStorage.getItem('auth');
+    if (!stored) {
       setLoading(false);
       return;
     }
 
-    api
-      .get<User>('/users/me')
+    // Appelle l'API pour récupérer les infos utilisateur
+    api.get<User>('/users/me', {
+      headers: {
+        Authorization: stored,
+      },
+    })
       .then(({ data }) => setUser(data))
       .catch(() => {
         localStorage.removeItem('auth');
@@ -42,23 +46,28 @@ export const AuthProvider: FC<AuthProviderProps> = ({ children }) => {
       .finally(() => setLoading(false));
   }, []);
 
-  const login = async (
-    username: string,
-    password: string
-  ): Promise<User> => {
-    const res = await api.post<User>('/login', { username, password });
-    const basic = 'Basic ' + btoa(`${username}:${password}`);
-    localStorage.setItem('auth', basic);
-    setUser(res.data);
-    return res.data;
+  const login = async (username: string, password: string): Promise<User> => {
+    const token = 'Basic ' + btoa(`${username}:${password}`);
+    localStorage.setItem('auth', token);
+
+    try {
+      const res = await api.get<User>('/users/me', {
+        headers: {
+          Authorization: token,
+        },
+      });
+      setUser(res.data);
+      return res.data;
+    } catch {
+      localStorage.removeItem('auth');
+      throw new Error('Identifiants incorrects');
+    }
   };
 
-  const logout = async (): Promise<void> => {
-    await api.post('/logout');
+  const logout = () => {
     localStorage.removeItem('auth');
     setUser(null);
   };
-  
 
   return (
     <AuthContext.Provider value={{ user, loading, login, logout }}>

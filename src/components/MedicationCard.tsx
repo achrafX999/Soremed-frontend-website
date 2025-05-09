@@ -20,7 +20,7 @@ const MedicationCard: React.FC<MedicationCardProps> = ({ medication }) => {
           {/* Si tu as genericName dans ton type, sinon supprime cette ligne */}
           
         </div>
-        <Pills className="h-6 w-6 text-blue-600" />
+        <Pills className="h-6 w-6 text-green-600" />
       </div>
       
       <div className="mt-4 space-y-3">
@@ -51,7 +51,7 @@ const MedicationCard: React.FC<MedicationCardProps> = ({ medication }) => {
                 {medication.quantity} units
               </span>
             </p>
-            <p className="text-lg font-bold text-blue-600">
+            <p className="text-lg font-bold text-green-600">
               {medication.price.toFixed(2)}DH
             </p>
           </div>
