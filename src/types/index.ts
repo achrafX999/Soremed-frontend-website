@@ -30,3 +30,12 @@ export type ChartData = {
   labels: string[];
   values: number[];
 };
+
+export interface PageResponse<T> {
+  content: T[];
+  totalElements: number;
+  totalPages: number;
+  number: number;
+  size: number;
+  // ajoute d’autres champs si besoin (sort, first, last…)
+}
