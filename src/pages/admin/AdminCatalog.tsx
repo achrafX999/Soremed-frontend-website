@@ -14,6 +14,7 @@ import {
 import api from '../../api/axios';
 import { toast } from 'react-hot-toast';
 import { Medication, PageResponse } from '../../types';
+import MedicationModal from '../../components/MedicationModal';
 
 const AdminCatalog: React.FC = () => {
   const [searchTerm, setSearchTerm]             = useState<string>('');
@@ -73,7 +74,6 @@ const AdminCatalog: React.FC = () => {
     })();
   }, []);
   
-
   // ── 3️⃣ Actions CRUD via backend ────────────────────────────────────────
   const handleAddMedication = async () => {
     try {
@@ -113,7 +113,6 @@ const AdminCatalog: React.FC = () => {
     }
   };
   
-
   const handleDeleteMedication = async (id: number) => {
     if (!confirm('Supprimer ce médicament ?')) return;
     try {
@@ -125,7 +124,6 @@ const AdminCatalog: React.FC = () => {
     }
   };
   
-
   // ── 4️⃣ Tri et Filtre ────────────────────────────────────────────────────
   const sortedMedications = [...medicationsList].sort((a, b) => {
     const aVal = String(a[sortField]);
@@ -142,167 +140,7 @@ const AdminCatalog: React.FC = () => {
   if (loading) return <div className="p-6 text-center">Chargement…</div>;
   if (error)   return <div className="p-6 text-red-600">{error}</div>;
 
-  // ── 6️⃣ Modal de création / édition ─────────────────────────────────────
-  const MedicationModal: React.FC<{
-    isEdit?: boolean;
-    onClose: () => void;
-    onSave: () => void;
-  }> = ({ isEdit = false, onClose, onSave }) => {
-    const med = isEdit && selectedMedication
-      ? selectedMedication
-      : (newMedication as Medication);
-
-    return (
-      <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
-        <div className="bg-white rounded-lg p-8 max-w-2xl w-full">
-          <h2 className="text-2xl font-bold mb-6">
-            {isEdit ? 'Modifier le médicament' : 'Ajouter un médicament'}
-          </h2>
-          <div className="grid grid-cols-2 gap-4 mb-6">
-            {/* Name */}
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">Name</label>
-              <input
-                type="text"
-                value={med.name}
-                onChange={e => {
-                  const val = e.target.value;
-                  if (isEdit && selectedMedication) {
-                    setSelectedMedication({ ...selectedMedication, name: val });
-                  } else {
-                    setNewMedication(prev => ({ ...prev, name: val }));
-                  }
-                }}
-                className="w-full p-2 border rounded-md"
-              />
-            </div>
-            {/* Dosage */}
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">Dosage</label>
-              <input
-                type="text"
-                value={med.dosage}
-                onChange={e => {
-                  const val = e.target.value;
-                  if (isEdit && selectedMedication) {
-                    setSelectedMedication({ ...selectedMedication, dosage: val });
-                  } else {
-                    setNewMedication(prev => ({ ...prev, dosage: val }));
-                  }
-                }}
-                className="w-full p-2 border rounded-md"
-              />
-            </div>
-            {/* Form */}
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">Form</label>
-              <select
-                value={med.form}
-                onChange={e => {
-                  const val = e.target.value;
-                  if (isEdit && selectedMedication) {
-                    setSelectedMedication({ ...selectedMedication, form: val });
-                  } else {
-                    setNewMedication(prev => ({ ...prev, form: val }));
-                  }
-                }}
-                className="w-full p-2 border rounded-md"
-              >
-                <option value="">Select Form</option>
-                <option value="Tablet">Tablet</option>
-                <option value="Capsule">Capsule</option>
-                <option value="Liquid">Liquid</option>
-                <option value="Injection">Injection</option>
-                <option value="Cream">Cream</option>
-              </select>
-            </div>
-            {/* Quantity */}
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">Quantity</label>
-              <input
-                type="number"
-                value={med.quantity}
-                onChange={e => {
-                  const val = parseInt(e.target.value, 10) || 0;
-                  if (isEdit && selectedMedication) {
-                    setSelectedMedication({ ...selectedMedication, quantity: val });
-                  } else {
-                    setNewMedication(prev => ({ ...prev, quantity: val }));
-                  }
-                }}
-                className="w-full p-2 border rounded-md"
-              />
-            </div>
-            {/* Price */}
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">Price</label>
-              <input
-                type="number"
-                step="0.01"
-                value={med.price}
-                onChange={e => {
-                  const val = parseFloat(e.target.value) || 0;
-                  if (isEdit && selectedMedication) {
-                    setSelectedMedication({ ...selectedMedication, price: val });
-                  } else {
-                    setNewMedication(prev => ({ ...prev, price: val }));
-                  }
-                }}
-                className="w-full p-2 border rounded-md"
-              />
-            </div>
-            {/* Manufacturer */}
-            <div className="col-span-2">
-              <label className="block text-sm font-medium text-gray-700 mb-1">Manufacturer</label>
-              <input
-                type="text"
-                value={med.manufacturer}
-                onChange={e => {
-                  const val = e.target.value;
-                  if (isEdit && selectedMedication) {
-                    setSelectedMedication({ ...selectedMedication, manufacturer: val });
-                  } else {
-                    setNewMedication(prev => ({ ...prev, manufacturer: val }));
-                  }
-                }}
-                className="w-full p-2 border rounded-md"
-              />
-            </div>
-            {/* Description */}
-            <div className="col-span-2">
-              <label className="block text-sm font-medium text-gray-700 mb-1">Description</label>
-              <textarea
-                rows={3}
-                value={med.description}
-                onChange={e => {
-                  const val = e.target.value;
-                  if (isEdit && selectedMedication) {
-                    setSelectedMedication({ ...selectedMedication, description: val });
-                  } else {
-                    setNewMedication(prev => ({ ...prev, description: val }));
-                  }
-                }}
-                className="w-full p-2 border rounded-md"
-              />
-            </div>
-          </div>
-          <div className="flex justify-end space-x-4">
-            <button onClick={onClose} className="px-4 py-2 text-gray-600 hover:text-gray-800">
-              Cancel
-            </button>
-            <button
-              onClick={onSave}
-              className="px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700"
-            >
-              {isEdit ? 'Save Changes' : 'Add Medication'}
-            </button>
-          </div>
-        </div>
-      </div>
-    );
-  };
-
-  // ── 7️⃣ Rendu principal ───────────────────────────────────────────────────
+  // ── 6️⃣ Rendu principal ───────────────────────────────────────────────────
   return (
     <div className="space-y-6 p-6">
       <div className="flex justify-between items-center">
@@ -421,6 +259,18 @@ const AdminCatalog: React.FC = () => {
 
       {showAddModal && (
         <MedicationModal
+          medication={{ id: 0, ...newMedication }}
+          onChange={(med: Medication) => {
+            setNewMedication({
+              name: med.name,
+              description: med.description,
+              dosage: med.dosage,
+              form: med.form,
+              manufacturer: med.manufacturer,
+              price: med.price,
+              quantity: med.quantity,
+            });
+          }}
           onClose={() => setShowAddModal(false)}
           onSave={handleAddMedication}
         />
@@ -428,6 +278,8 @@ const AdminCatalog: React.FC = () => {
       {showEditModal && selectedMedication && (
         <MedicationModal
           isEdit
+          medication={selectedMedication}
+          onChange={(med: Medication) => setSelectedMedication(med)}
           onClose={() => {
             setShowEditModal(false);
             setSelectedMedication(null);
