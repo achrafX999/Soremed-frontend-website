@@ -1,16 +1,15 @@
 // src/pages/RegistrationPage.tsx
 import React, { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { UserPlus } from 'lucide-react';
 import { toast, Toaster } from 'react-hot-toast';
 
 const RegistrationPage: React.FC = () => {
+  const navigate = useNavigate();
   const [formData, setFormData] = useState({
-    firstName: '',
-    lastName: '',
     iceNumber: '',
     address: '',
     phone: '',
-    openingDate: '',
     username: '',
     password: ''
   });
@@ -33,18 +32,10 @@ const RegistrationPage: React.FC = () => {
         body: JSON.stringify(formData)
       });
       if (!response.ok) throw new Error('Registration failed');
+      // Affiche le toast puis redirige après un court délai
       toast.success('Registration successful');
-      // Reset form or redirect...
-      setFormData({
-        firstName: '',
-        lastName: '',
-        iceNumber: '',
-        address: '',
-        phone: '',
-        openingDate: '',
-        username: '',
-        password: ''
-      });
+      setTimeout(() => navigate('/'), 1500);
+      setFormData({ iceNumber: '', address: '', phone: '', username: '', password: '' });
     } catch (err) {
       console.error(err);
       toast.error('Registration failed');
@@ -61,38 +52,6 @@ const RegistrationPage: React.FC = () => {
         </div>
 
         <form onSubmit={handleSubmit} className="space-y-6">
-          {/* First + Last Name */}
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-            <div>
-              <label htmlFor="firstName" className="block text-sm font-medium text-gray-700 mb-2">
-                First Name
-              </label>
-              <input
-                type="text"
-                id="firstName"
-                name="firstName"
-                value={formData.firstName}
-                onChange={handleChange}
-                className="w-full px-4 py-2 border rounded-md focus:ring-2 focus:ring-green-500"
-                required
-              />
-            </div>
-            <div>
-              <label htmlFor="lastName" className="block text-sm font-medium text-gray-700 mb-2">
-                Last Name
-              </label>
-              <input
-                type="text"
-                id="lastName"
-                name="lastName"
-                value={formData.lastName}
-                onChange={handleChange}
-                className="w-full px-4 py-2 border rounded-md focus:ring-2 focus:ring-green-500"
-                required
-              />
-            </div>
-          </div>
-
           {/* ICE */}
           <div>
             <label htmlFor="iceNumber" className="block text-sm font-medium text-gray-700 mb-2">
@@ -135,22 +94,6 @@ const RegistrationPage: React.FC = () => {
               id="phone"
               name="phone"
               value={formData.phone}
-              onChange={handleChange}
-              className="w-full px-4 py-2 border rounded-md focus:ring-2 focus:ring-green-500"
-              required
-            />
-          </div>
-
-          {/* Opening Date */}
-          <div>
-            <label htmlFor="openingDate" className="block text-sm font-medium text-gray-700 mb-2">
-              Opening Date
-            </label>
-            <input
-              type="date"
-              id="openingDate"
-              name="openingDate"
-              value={formData.openingDate}
               onChange={handleChange}
               className="w-full px-4 py-2 border rounded-md focus:ring-2 focus:ring-green-500"
               required
