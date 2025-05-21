@@ -22,7 +22,7 @@ const OrderForm: React.FC<OrderFormProps> = ({ onSuccess }) => {
   const [selectedMedId, setSelectedMedId] = useState<number | ''>('');
   const [quantity, setQuantity] = useState<number>(1);
 
-  // 1. Charger tous les médicaments (grand pageSize)
+  // Charger tous les médicaments
   useEffect(() => {
     api
       .get<{ content: Medication[] }>('/medications', { params: { page: 0, size: 1000 } })
@@ -44,16 +44,18 @@ const OrderForm: React.FC<OrderFormProps> = ({ onSuccess }) => {
             : i
         );
       }
+
+      // On force price en tant que number (default 0 si undefined)
+      const price = med.price ?? 0;
       return [
         ...items,
         {
           medicationId: med.id,
-          medicationName: med.name,   // ← nouveau
+          medicationName: med.name,
           quantity,
-          price:       med.price
+          price
         }
       ];
-      
     });
 
     setSelectedMedId('');
@@ -85,7 +87,6 @@ const OrderForm: React.FC<OrderFormProps> = ({ onSuccess }) => {
       return;
     }
     try {
-      // 2. Appel POST /api/orders?userId=...
       const res = await api.post(
         '/orders',
         selectedItems,
@@ -93,7 +94,6 @@ const OrderForm: React.FC<OrderFormProps> = ({ onSuccess }) => {
       );
       const created = res.data as { id: number };
       toast.success('Commande passée avec succès');
-      // 3. Redirige vers /tracking/:orderId
       navigate(`/tracking/${created.id}`);
       onSuccess?.();
     } catch (err) {
@@ -186,41 +186,38 @@ const OrderForm: React.FC<OrderFormProps> = ({ onSuccess }) => {
                 </tr>
               </thead>
               <tbody>
-                {selectedItems.map(item => {
-                  const med = medications.find(m => m.id === item.medicationId)!;
-                  return (
-                    <tr key={item.medicationId}>
-                      <td className="p-2">{med.name}</td>
-                      <td className="p-2 text-center">
-                        <input
-                          type="number"
-                          min={1}
-                          value={item.quantity}
-                          onChange={e =>
-                            handleQuantityChange(
-                              item.medicationId,
-                              Math.max(1, parseInt(e.target.value, 10) || 1)
-                            )
-                          }
-                          className="w-16 text-center border rounded"
-                        />
-                      </td>
-                      <td className="p-2 text-right">
-                        {(item.price * item.quantity).toFixed(2)}DH
-                      </td>
-                      <td className="p-2 text-center">
-                        <button
-                          type="button"
-                          aria-label="Supprimer article"
-                          onClick={() => handleRemoveItem(item.medicationId)}
-                          className="text-red-600 hover:text-red-800"
-                        >
-                          Supprimer
-                        </button>
-                      </td>
-                    </tr>
-                  );
-                })}
+                {selectedItems.map(item => (
+                  <tr key={item.medicationId}>
+                    <td className="p-2">{item.medicationName}</td>
+                    <td className="p-2 text-center">
+                      <input
+                        type="number"
+                        min={1}
+                        value={item.quantity}
+                        onChange={e =>
+                          handleQuantityChange(
+                            item.medicationId,
+                            Math.max(1, parseInt(e.target.value, 10) || 1)
+                          )
+                        }
+                        className="w-16 text-center border rounded"
+                      />
+                    </td>
+                    <td className="p-2 text-right">
+                      {(item.price * item.quantity).toFixed(2)}DH
+                    </td>
+                    <td className="p-2 text-center">
+                      <button
+                        type="button"
+                        aria-label="Supprimer article"
+                        onClick={() => handleRemoveItem(item.medicationId)}
+                        className="text-red-600 hover:text-red-800"
+                      >
+                        Supprimer
+                      </button>
+                    </td>
+                  </tr>
+                ))}
               </tbody>
             </table>
 

@@ -1,5 +1,16 @@
+// tsconfig.json
 {
-  "files": [],
+  "compilerOptions": {
+    // • on pointe la base des imports vers /src
+    "baseUrl": "src",
+    // • on déclare les alias qu'on veut
+    "paths": {
+      "@/components/*": ["components/*"],
+      "@/hooks/*":      ["hooks/*"],
+      "@/assets/*":     ["assets/*"]
+    }
+  },
+"include": ["src/**/*"],        // ← on inclut tout src
   "references": [
     { "path": "./tsconfig.app.json" },
     { "path": "./tsconfig.node.json" }

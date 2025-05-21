@@ -1,148 +1,226 @@
-// src/pages/RegistrationPage.tsx
-import React, { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
-import { UserPlus } from 'lucide-react';
-import { toast, Toaster } from 'react-hot-toast';
+"use client"
+
+import type React from "react"
+import { useState } from "react"
+import { useNavigate, Link } from "react-router-dom"
+import { Button } from "@/components/components/ui/button"
+import { Input } from "@/components/components/ui/input"
+import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/components/ui/card"
+import { Label } from "@/components/components/ui/label"
+import { Toaster } from "@/components/components/ui/toaster"
+import { useToast } from "@/components/hooks/use-toast"
+import { UserPlus, Building, MapPin, Phone, Lock, ArrowLeft, Loader2, User } from "lucide-react"
+import { motion } from "framer-motion"
+
+// Supposons que le logo est importé comme ceci
+import logoSrc from "../assets/images/SOREMED logo.png"
 
 const RegistrationPage: React.FC = () => {
-  const navigate = useNavigate();
+  const navigate = useNavigate()
+  const { toast } = useToast()
+
+  const [isLoading, setIsLoading] = useState(false)
   const [formData, setFormData] = useState({
-    iceNumber: '',
-    address: '',
-    phone: '',
-    username: '',
-    password: ''
-  });
+    iceNumber: "",
+    address: "",
+    phone: "",
+    username: "",    // <— c’est bien un "username"
+    password: "",
+  })
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const { name, value } = e.target;
-    setFormData(prev => ({
-      ...prev,
-      [name]: value
-    }));
-  };
+    const { name, value } = e.target
+    setFormData(prev => ({ ...prev, [name]: value }))
+  }
 
   const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
+    e.preventDefault()
+    setIsLoading(true)
     try {
-      const response = await fetch('/api/users/register', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        credentials: 'include',
-        body: JSON.stringify(formData)
-      });
-      if (!response.ok) throw new Error('Registration failed');
-      // Affiche le toast puis redirige après un court délai
-      toast.success('Registration successful');
-      setTimeout(() => navigate('/'), 1500);
-      setFormData({ iceNumber: '', address: '', phone: '', username: '', password: '' });
-    } catch (err) {
-      console.error(err);
-      toast.error('Registration failed');
+      const response = await fetch("/api/users/register", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        credentials: "include",
+        body: JSON.stringify(formData),
+      })
+      if (!response.ok) throw new Error("Registration failed")
+
+      toast({
+        title: "Inscription réussie",
+        description: "Votre compte a été créé avec succès.",
+        variant: "default",
+      })
+      setTimeout(() => navigate("/"), 1500)
+      setFormData({ iceNumber: "", address: "", phone: "", username: "", password: "" })
+    } catch {
+      toast({
+        title: "Échec de l'inscription",
+        description: "Une erreur s'est produite lors de l'inscription.",
+        variant: "destructive",
+      })
+    } finally {
+      setIsLoading(false)
     }
-  };
+  }
 
   return (
-    <div className="max-w-2xl mx-auto">
-      <Toaster position="top-right" />
-      <div className="bg-white rounded-lg shadow-md p-8">
-        <div className="flex items-center mb-8">
-          <UserPlus className="h-8 w-8 text-green-600 mr-3" />
-          <h1 className="text-3xl font-bold text-gray-900">Registration</h1>
+    <div className="min-h-screen bg-gradient-to-br from-emerald-50 to-teal-100 py-12 px-4">
+      <Toaster />
+
+      <motion.div
+        initial={{ opacity: 0, y: 20 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.5 }}
+        className="max-w-2xl mx-auto"
+      >
+        <div className="text-center mb-6">
+          <img src={logoSrc} alt="SOREMED Logo" className="h-16 w-auto mx-auto mb-4" />
+          <h1 className="text-3xl font-bold text-emerald-800">SOREMED</h1>
+          <p className="text-emerald-600">Créez votre compte client</p>
         </div>
 
-        <form onSubmit={handleSubmit} className="space-y-6">
-          {/* ICE */}
-          <div>
-            <label htmlFor="iceNumber" className="block text-sm font-medium text-gray-700 mb-2">
-              ICE Registration Number
-            </label>
-            <input
-              type="text"
-              id="iceNumber"
-              name="iceNumber"
-              value={formData.iceNumber}
-              onChange={handleChange}
-              className="w-full px-4 py-2 border rounded-md focus:ring-2 focus:ring-green-500"
-              required
-            />
-          </div>
+        <Card className="shadow-xl border-0">
+          <CardHeader className="space-y-1 pb-2">
+            <div className="flex items-center">
+              <UserPlus className="h-5 w-5 text-emerald-600 mr-2" />
+              <CardTitle className="text-2xl">Inscription</CardTitle>
+            </div>
+            <CardDescription>Remplissez le formulaire ci-dessous pour créer votre compte</CardDescription>
+          </CardHeader>
 
-          {/* Address */}
-          <div>
-            <label htmlFor="address" className="block text-sm font-medium text-gray-700 mb-2">
-              Address
-            </label>
-            <input
-              type="text"
-              id="address"
-              name="address"
-              value={formData.address}
-              onChange={handleChange}
-              className="w-full px-4 py-2 border rounded-md focus:ring-2 focus:ring-green-500"
-              required
-            />
-          </div>
+          <CardContent>
+            <form onSubmit={handleSubmit} className="space-y-4">
+              {/* ICE */}
+              <div className="space-y-2">
+                <Label htmlFor="iceNumber" className="text-sm font-medium">
+                  Numéro ICE
+                </Label>
+                <div className="relative">
+                  <Building className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-500 h-4 w-4" />
+                  <Input
+                    type="text"
+                    id="iceNumber"
+                    name="iceNumber"
+                    value={formData.iceNumber}
+                    onChange={handleChange}
+                    className="pl-10"
+                    required
+                  />
+                </div>
+              </div>
 
-          {/* Phone */}
-          <div>
-            <label htmlFor="phone" className="block text-sm font-medium text-gray-700 mb-2">
-              Phone Number
-            </label>
-            <input
-              type="tel"
-              id="phone"
-              name="phone"
-              value={formData.phone}
-              onChange={handleChange}
-              className="w-full px-4 py-2 border rounded-md focus:ring-2 focus:ring-green-500"
-              required
-            />
-          </div>
+              {/* Address */}
+              <div className="space-y-2">
+                <Label htmlFor="address" className="text-sm font-medium">
+                  Adresse
+                </Label>
+                <div className="relative">
+                  <MapPin className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-500 h-4 w-4" />
+                  <Input
+                    type="text"
+                    id="address"
+                    name="address"
+                    value={formData.address}
+                    onChange={handleChange}
+                    className="pl-10"
+                    required
+                  />
+                </div>
+              </div>
 
-          {/* Username */}
-          <div>
-            <label htmlFor="username" className="block text-sm font-medium text-gray-700 mb-2">
-              Username
-            </label>
-            <input
-              type="text"
-              id="username"
-              name="username"
-              value={formData.username}
-              onChange={handleChange}
-              className="w-full px-4 py-2 border rounded-md focus:ring-2 focus:ring-green-500"
-              required
-            />
-          </div>
+              {/* Phone */}
+              <div className="space-y-2">
+                <Label htmlFor="phone" className="text-sm font-medium">
+                  Numéro de téléphone
+                </Label>
+                <div className="relative">
+                  <Phone className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-500 h-4 w-4" />
+                  <Input
+                    type="tel"
+                    id="phone"
+                    name="phone"
+                    value={formData.phone}
+                    onChange={handleChange}
+                    className="pl-10"
+                    required
+                  />
+                </div>
+              </div>
 
-          {/* Password */}
-          <div>
-            <label htmlFor="password" className="block text-sm font-medium text-gray-700 mb-2">
-              Password
-            </label>
-            <input
-              type="password"
-              id="password"
-              name="password"
-              value={formData.password}
-              onChange={handleChange}
-              className="w-full px-4 py-2 border rounded-md focus:ring-2 focus:ring-green-500"
-              required
-            />
-          </div>
+              {/* Username */}
+              <div className="space-y-2">
+                <Label htmlFor="username" className="text-sm font-medium">
+                  Nom d’utilisateur
+                </Label>
+                <div className="relative">
+                  <User className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-500 h-4 w-4" />
+                  <Input
+                    type="text"
+                    id="username"
+                    name="username"
+                    placeholder="Votre nom d’utilisateur"
+                    value={formData.username}
+                    onChange={handleChange}
+                    className="pl-10"
+                    required
+                  />
+                </div>
+              </div>
 
-          <button
-            type="submit"
-            className="w-full bg-green-600 text-white py-3 px-6 rounded-md hover:bg-green-700 flex items-center justify-center"
-          >
-            <UserPlus className="h-5 w-5 mr-2" />
-            Register
-          </button>
-        </form>
-      </div>
+              {/* Password */}
+              <div className="space-y-2">
+                <Label htmlFor="password" className="text-sm font-medium">
+                  Mot de passe
+                </Label>
+                <div className="relative">
+                  <Lock className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-500 h-4 w-4" />
+                  <Input
+                    type="password"
+                    id="password"
+                    name="password"
+                    value={formData.password}
+                    onChange={handleChange}
+                    className="pl-10"
+                    required
+                  />
+                </div>
+                <p className="text-xs text-gray-500 mt-1">
+                  Le mot de passe doit contenir au moins 8 caractères
+                </p>
+              </div>
+
+              <Button
+                type="submit"
+                className="w-full bg-emerald-600 hover:bg-emerald-700"
+                disabled={isLoading}
+              >
+                {isLoading ? (
+                  <div className="flex items-center">
+                    <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                    Inscription en cours...
+                  </div>
+                ) : (
+                  <div className="flex items-center">
+                    <UserPlus className="mr-2 h-5 w-5" />
+                    S'inscrire
+                  </div>
+                )}
+              </Button>
+            </form>
+          </CardContent>
+
+          <CardFooter className="flex justify-center border-t pt-4">
+            <Button variant="link" asChild className="text-emerald-600">
+              <Link to="/" className="flex items-center">
+                <ArrowLeft className="mr-2 h-4 w-4" />
+                Retour à la connexion
+              </Link>
+            </Button>
+          </CardFooter>
+        </Card>
+      </motion.div>
     </div>
-  );
-};
+  )
+}
 
 export default RegistrationPage;

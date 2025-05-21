@@ -13,8 +13,8 @@ import {
 } from 'lucide-react';
 import api from '../../api/axios';
 import { toast } from 'react-hot-toast';
-import { Medication, PageResponse } from '../../types';
 import MedicationModal from '../../components/MedicationModal';
+import { Medication, PageResponse } from '../../types';
 
 const AdminCatalog: React.FC = () => {
   const [searchTerm, setSearchTerm]             = useState<string>('');
@@ -54,10 +54,10 @@ const AdminCatalog: React.FC = () => {
     (async () => {
       try {
         const res = await api.get<PageResponse<Medication>>(
-          '/medications',
+          '/medications/search',              // ← ici
           {
             params: {
-              search: '',
+              name       : searchTerm,        // paramètre “name” côté back
               minQuantity: 0,
               page: 0,
               size: 1000
@@ -132,9 +132,12 @@ const AdminCatalog: React.FC = () => {
       ? aVal.localeCompare(bVal)
       : bVal.localeCompare(aVal);
   });
-  const filteredMedications = sortedMedications.filter(med =>
-    med.name.toLowerCase().includes(searchTerm.toLowerCase())
-  );
+  const filteredMedications = sortedMedications.filter(med => {
+    const nm = med.name ?? '';                  // si name est undefined, on met ''
+    return nm.toLowerCase().includes(
+      searchTerm.toLowerCase()
+    );
+  });
 
   // ── 5️⃣ Gestion du chargement / erreur ──────────────────────────────────
   if (loading) return <div className="p-6 text-center">Chargement…</div>;
@@ -231,7 +234,7 @@ const AdminCatalog: React.FC = () => {
                     </div>
                   </td>
                   <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
-                    {med.price.toFixed(2)}DH
+                    {(med.price ?? 0).toFixed(2)}DH
                   </td>
                   <td className="px-6 py-4 whitespace-nowrap text-right">
                     <button

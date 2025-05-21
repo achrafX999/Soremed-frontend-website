@@ -3,13 +3,14 @@
 export interface Medication {
   id: number;
   name: string;
-  description: string;
+  description: string;      // <— tu avais déjà
   dosage?: string;
   form?: string;
   manufacturer?: string;
-  price: number;
+  price?: number; 
   quantity: number;
 }
+
 
 export interface Order {
   id: number; // Changed from string to number to match backend
@@ -33,8 +34,8 @@ export type ChartData = {
 
 export interface PageResponse<T> {
   content: T[];
-  totalElements: number;
   totalPages: number;
+  totalElements: number;
   number: number;
   size: number;
   // ajoute d’autres champs si besoin (sort, first, last…)

@@ -89,10 +89,10 @@ const NewsPage: React.FC = () => {
         {news.map(item => (
           <div key={item.id} className="bg-white rounded-lg overflow-hidden shadow-md">
             <img
-              src={item.imageUrl}
-              alt={item.title}
-              className="w-full h-48 object-cover"
-            />
+            src={`${import.meta.env.VITE_API_BASE_URL }${item.imageUrl}`}
+            alt={item.title}
+            className="w-full h-48 object-cover"
+          />
             <div className="p-6">
               <div className="flex justify-between items-center">
                 <span className="text-sm font-semibold text-green-600 bg-green-100 px-3 py-1 rounded-full">

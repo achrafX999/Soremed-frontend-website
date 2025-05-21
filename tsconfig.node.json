@@ -1,5 +1,9 @@
+// tsconfig.node.json
 {
+  "extends": "./tsconfig.json",
   "compilerOptions": {
+    "composite": true,
+    "emitDeclarationOnly": true,         // ← idem ici pour autoriser l’option
     "target": "ES2022",
     "lib": ["ES2023"],
     "module": "ESNext",
@@ -7,16 +11,9 @@
 
     /* Bundler mode */
     "moduleResolution": "bundler",
-    "allowImportingTsExtensions": true,
+    "allowImportingTsExtensions": true,  // ← ok maintenant
     "isolatedModules": true,
-    "moduleDetection": "force",
-    "noEmit": true,
-
-    /* Linting */
-    "strict": true,
-    "noUnusedLocals": true,
-    "noUnusedParameters": true,
-    "noFallthroughCasesInSwitch": true
+    "moduleDetection": "force"
   },
   "include": ["vite.config.ts"]
 }
