@@ -30,8 +30,14 @@ const LoginPage: React.FC = () => {
     setError('');
     setIsLoading(true);
     try {
-      await login(username, password);
-      navigate('/dashboard');
+      const user = await login(username, password);
+      if (user.role === 'ADMIN') {
+        navigate('/admin/dashboard');
+      } else if (user.role === 'SERVICE_ACHAT') {
+        navigate('/achat/dashboard');
+      } else {
+        navigate('/dashboard');
+      }
     } catch {
       setError('Identifiants incorrects');
     } finally {

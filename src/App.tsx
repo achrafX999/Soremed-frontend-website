@@ -4,10 +4,12 @@ import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import { AuthProvider } from './contexts/AuthContext';
 import { RequireAuth } from './components/RequireAuth';
 import { RequireAdmin } from './components/RequireAdmin';
+import { RequireServiceAchat } from './components/ServiceAchat/RequireServiceAchat';
 
 // Layouts
 import ClientLayout from './components/ClientLayout';
 import AdminLayout from './components/AdminLayout';
+import ServiceAchatLayout from './components/ServiceAchat/ServiceAchatLayout';
 
 // Pages client
 import HomePage        from './pages/HomePage';
@@ -51,6 +53,22 @@ export default function App() {
             <Route path="orders"     element={<AdminOrders />} />
             <Route path="news"       element={<AdminNews />} />
             <Route path="notifications" element={<AdminNotifications />} />
+          </Route>
+
+          {/* Service Achat */}
+          <Route
+            path="/achat/*"
+            element={
+              <RequireServiceAchat>
+                <ServiceAchatLayout />
+              </RequireServiceAchat>
+            }
+          >
+            <Route index element={<AdminDashboard />} />
+            <Route path="dashboard" element={<AdminDashboard />} />
+            <Route path="catalog" element={<AdminCatalog />} />
+            <Route path="orders" element={<AdminOrders />} />
+            <Route path="news" element={<AdminNews />} />
           </Route>
 
           {/* Client */}
