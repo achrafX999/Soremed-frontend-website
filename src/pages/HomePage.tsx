@@ -39,12 +39,12 @@ const HomePage: React.FC = () => {
     <div>
       <div className="mb-8">
         <h1 className="text-3xl font-bold text-gray-900 mb-4">
-          Search Medications
+          Rechercher des médicaments
         </h1>
         <div className="flex mb-4">
           <input
             type="number"
-            placeholder="Quantity"
+            placeholder="Quantité"
             value={searchQuantity}
             onChange={e => { setPage(0); setSearchQuantity(e.target.value); }}
             className="w-24 mr-4 pl-2 py-2 border rounded-lg focus:ring-2 focus:ring-green-500"
@@ -53,7 +53,7 @@ const HomePage: React.FC = () => {
             <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400" />
             <input
               type="text"
-              placeholder="Search by medication name..."
+              placeholder="Rechercher par nom de médicament..."
               value={searchTerm}
               onChange={e => { setPage(0); setSearchTerm(e.target.value); }}
               className="w-full pl-10 pr-4 py-2 border rounded-lg focus:ring-2 focus:ring-green-500"

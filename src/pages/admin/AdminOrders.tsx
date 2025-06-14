@@ -235,7 +235,7 @@ function AdminOrders() {
       <Toaster position="top-right" />
       
       <div className="flex justify-between items-center">
-        <h1 className="text-2xl font-bold text-gray-900">Order Management</h1>
+        <h1 className="text-2xl font-bold text-gray-900">Gestion des commandes</h1>
         <button
           onClick={handleExportCSV}
           className="flex items-center px-4 py-2 bg-green-600 text-white rounded-md hover:bg-green-700"
@@ -252,7 +252,7 @@ function AdminOrders() {
               <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 h-5 w-5" />
               <input
                 type="text"
-                placeholder="Search by order ID or client..."
+                placeholder="Rechercher par ID de commande ou client..."
                 value={searchTerm}
                 onChange={(e) => setSearchTerm(e.target.value)}
                 className="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
@@ -332,10 +332,10 @@ function AdminOrders() {
                         disabled={processingIds.includes(order.id)}
                         className={`text-sm font-medium rounded-full px-3 py-1 ${getStatusColor(order.status)}`}
                       >
-                        <option value="PENDING">Pending</option>
-                        <option value="PROCESSING">Processing</option>
-                        <option value="COMPLETED">Completed</option>
-                        <option value="CANCELLED">Cancelled</option>
+                        <option value="PENDING">En attente</option>
+                        <option value="PROCESSING">En cours</option>
+                        <option value="COMPLETED">Terminée</option>
+                        <option value="CANCELLED">Annulée</option>
                       </select>
                     </td>
                     <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">

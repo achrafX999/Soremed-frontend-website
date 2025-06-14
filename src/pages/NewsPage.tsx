@@ -11,9 +11,9 @@ const NewsPage: React.FC = () => {
   const [news, setNews] = useState<News[]>([]);
   // états pour les stats
   const [stats, setStats] = useState<StatCard[]>([
-    { title: "New Products This Month", value: "…", icon: Package2, color: "bg-blue-500" },
-    { title: "Inventory Updates",      value: "…", icon: Bell,     color: "bg-green-500" },
-    { title: "Price Changes",           value: "…", icon: TrendingUp, color: "bg-purple-500" }
+    { title: "Nouveaux produits ce mois-ci", value: "…", icon: Package2, color: "bg-blue-500" },
+    { title: "Mises à jour de l'inventaire", value: "…", icon: Bell, color: "bg-green-500" },
+    { title: "Changements de prix", value: "…", icon: TrendingUp, color: "bg-purple-500" }
   ]);
 
   const [loading, setLoading] = useState(true);
@@ -35,19 +35,19 @@ const NewsPage: React.FC = () => {
         const s = statsRes.data;
         setStats([
           {
-            title: "New Products This Month",
+            title: "Nouveaux produits ce mois-ci",
             value: s.newProductsThisMonth.toString(),
             icon: Package2,
             color: "bg-blue-500"
           },
           {
-            title: "Inventory Updates",
+            title: "Mises à jour de l'inventaire",
             value: s.inventoryUpdatesThisMonth.toString(),
             icon: Bell,
             color: "bg-green-500"
           },
           {
-            title: "Price Changes",
+            title: "Changements de prix",
             value: s.priceChangesThisMonth.toString(),
             icon: TrendingUp,
             color: "bg-purple-500"
@@ -67,7 +67,7 @@ const NewsPage: React.FC = () => {
 
   return (
     <div className="space-y-8 p-6">
-      <h1 className="text-3xl font-bold">News & Updates</h1>
+      <h1 className="text-3xl font-bold">Actualités & Mises à jour</h1>
 
       {/* Statistiques */}
       <div className="grid md:grid-cols-3 gap-6">
@@ -105,7 +105,7 @@ const NewsPage: React.FC = () => {
               <h3 className="mt-4 text-xl font-semibold">{item.title}</h3>
               <p className="mt-2 text-gray-600">{item.description}</p>
               <button className="mt-4 text-green-600 hover:text-green-800 font-medium">
-                Read more →
+                En savoir plus →
               </button>
             </div>
           </div>

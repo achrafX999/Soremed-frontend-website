@@ -84,13 +84,13 @@ const AdminNews: React.FC = () => {
   return (
     <div className="p-6 space-y-6">
       <div className="flex justify-between items-center">
-        <h1 className="text-2xl font-bold">News Management</h1>
+        <h1 className="text-2xl font-bold">Gestion des actualités</h1>
         <button
           onClick={() => setShowAddModal(true)}
           className="flex items-center px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700"
         >
           <Plus className="h-5 w-5 mr-2" />
-          Add News
+          Ajouter une actualité
         </button>
       </div>
 

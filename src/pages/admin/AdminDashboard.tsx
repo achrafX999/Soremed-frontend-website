@@ -1,5 +1,5 @@
 "use client"
-import React, { useEffect, useState } from 'react'
+import { useEffect, useState } from 'react'
 import { Users, Package2, ClipboardList, ShoppingCart } from "lucide-react"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/components/ui/card"
 import api from '../../api/axios'
@@ -34,9 +34,9 @@ export default function AdminDashboard() {
 
   const stats = metrics
     ? [
-        { title: 'Total Users', value: metrics.totalUsers, icon: Users, color: 'bg-blue-500' },
-        { title: 'Active Orders', value: metrics.activeOrders, icon: ClipboardList, color: 'bg-green-500' },
-        { title: 'Products', value: metrics.totalProducts, icon: Package2, color: 'bg-purple-500' },
+        { title: 'Total des utilisateurs', value: metrics.totalUsers, icon: Users, color: 'bg-blue-500' },
+        { title: 'Commandes actives', value: metrics.activeOrders, icon: ClipboardList, color: 'bg-green-500' },
+        { title: 'Produits', value: metrics.totalProducts, icon: Package2, color: 'bg-purple-500' },
       ]
     : []
 
@@ -66,7 +66,7 @@ export default function AdminDashboard() {
                 </div>
               </div>
               <div className="mt-4 text-sm text-muted-foreground">
-                Current totals
+                Totaux actuels
               </div>
             </CardContent>
           </Card>
@@ -78,9 +78,9 @@ export default function AdminDashboard() {
             <CardHeader>
               <CardTitle className="flex items-center gap-2">
                 <ShoppingCart className="h-5 w-5" />
-                Top Products
+                Top produits
               </CardTitle>
-              <CardDescription>Best performing products by sales volume</CardDescription>
+              <CardDescription>Meilleurs produits par volume de ventes</CardDescription>
             </CardHeader>
             <CardContent>
               <div className="space-y-4">

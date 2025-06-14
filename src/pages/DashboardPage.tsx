@@ -24,6 +24,20 @@ const DashboardPage: React.FC = () => {
   const [statusData, setStatusData]     = useState<OrderStatusDTO[]>([]);
   const [loading, setLoading]           = useState(true);
   const [error, setError]               = useState<string | null>(null);
+  const statusLabel = (status: string) => {
+  switch (status.toUpperCase()) {
+    case 'PROCESSING':    // or 'IN_PROGRESS'
+      return 'En cours'
+    case 'PENDING':
+      return 'Attente'
+    case 'COMPLETED':
+      return 'Terminée'
+    case 'CANCELLED':
+      return 'Annulée'
+    default:
+      return status
+  }
+};
 
   useEffect(() => {
     Promise.all([
@@ -63,7 +77,7 @@ const DashboardPage: React.FC = () => {
     volume: p.totalQuantity
   }));
   const pieData = statusData.map(s => ({
-    name: s.status,
+    name: statusLabel(s.status),
     value: s.count,
     color:
       s.status.toUpperCase() === 'COMPLETED'   ? '#10B981' :

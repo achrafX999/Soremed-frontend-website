@@ -52,11 +52,11 @@ const OrderList: React.FC<OrderListProps> = ({ orders, onStatusChange }) => {
                 <div className="flex items-center space-x-2">
                   <Package2 className="h-5 w-5 text-gray-500" />
                   <h3 className="text-lg font-medium text-gray-900">
-                    Order #{order.id}
+                    Commande n°{order.id}
                   </h3>
                 </div>
                 <p className="text-sm text-gray-500 mt-1">
-                  Placed on {new Date(order.orderDate).toLocaleDateString()}
+                  Passée le {new Date(order.orderDate).toLocaleDateString()}
                 </p>
               </div>
               <div className={`px-3 py-1 rounded-full text-sm font-medium ${getStatusColor(order.status)}`}>
@@ -70,7 +70,7 @@ const OrderList: React.FC<OrderListProps> = ({ orders, onStatusChange }) => {
             {/* Liste des items */}
             <div className="mt-4">
               <h4 className="text-sm font-medium text-gray-900 mb-2">
-                Order Items:
+                Médicaments commandés:
               </h4>
               <div className="space-y-2">
               {order.items.map((item, idx) => (
@@ -79,7 +79,7 @@ const OrderList: React.FC<OrderListProps> = ({ orders, onStatusChange }) => {
                   {item.medicationName} × {item.quantity}
                 </span>
                 <span className="font-medium">
-                  DH{(item.price * item.quantity).toFixed(2)}
+                  {(item.price * item.quantity).toFixed(2)} DH
                 </span>
               </div>
             ))}
@@ -90,9 +90,9 @@ const OrderList: React.FC<OrderListProps> = ({ orders, onStatusChange }) => {
             {/* Total calculé */}
             <div className="mt-4 pt-4 border-t border-gray-200">
               <div className="flex justify-between items-center">
-                <span className="font-medium">Total Amount:</span>
+                <span className="font-medium">Montant total:</span>
                 <span className="text-lg font-bold text-green-600">
-                  DH{total.toFixed(2)}
+                  {total.toFixed(2)} DH
                 </span>
               </div>
             </div>

@@ -72,7 +72,7 @@ const AdminCatalog: React.FC = () => {
         setLoading(false);
       }
     })();
-  }, []);
+  }, );
   
   // ── 3️⃣ Actions CRUD via backend ────────────────────────────────────────
   const handleAddMedication = async () => {
@@ -147,13 +147,13 @@ const AdminCatalog: React.FC = () => {
   return (
     <div className="space-y-6 p-6">
       <div className="flex justify-between items-center">
-        <h1 className="text-2xl font-bold">Catalog Management</h1>
+        <h1 className="text-2xl font-bold">Gestion du catalogue</h1>
         <button
           onClick={() => setShowAddModal(true)}
           className="flex items-center px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700"
         >
           <Plus className="h-5 w-5 mr-2" />
-          Add Medication
+          Ajouter un médicament
         </button>
       </div>
 
@@ -164,7 +164,7 @@ const AdminCatalog: React.FC = () => {
               <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 h-5 w-5" />
               <input
                 type="text"
-                placeholder="Search medications..."
+                placeholder="Rechercher des médicaments..."
                 value={searchTerm}
                 onChange={e => setSearchTerm(e.target.value)}
                 className="w-full pl-10 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500"
