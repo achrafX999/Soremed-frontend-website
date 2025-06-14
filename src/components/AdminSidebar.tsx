@@ -7,11 +7,11 @@ const AdminSidebar: React.FC = () => {
   const isActive = (path: string) => location.pathname === `/admin${path}`
 
   const menuItems = [
-    { path: "", icon: LayoutDashboard, label: "Dashboard" },
-    { path: "/users", icon: Users, label: "Users" },
-    { path: "/catalog", icon: Package2, label: "Catalog" },
-    { path: "/orders", icon: ClipboardList, label: "Orders" },
-    { path: "/news", icon: Newspaper, label: "News" },
+    { path: "", icon: LayoutDashboard, label: "Tableau de bord" },
+    { path: "/users", icon: Users, label: "Utilisateurs" },
+    { path: "/catalog", icon: Package2, label: "Catalogue" },
+    { path: "/orders", icon: ClipboardList, label: "Commandes" },
+    { path: "/news", icon: Newspaper, label: "Actualités" },
     { path: "/notifications", icon: Bell, label: "Notifications" },
   ]
 

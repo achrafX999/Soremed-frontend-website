@@ -53,8 +53,8 @@ const DashboardPage: React.FC = () => {
     ?.count ?? 0;
 
   const statsKpi = [
-    { title: 'Orders in Progress', value: processingCount, icon: Clock,       color: 'bg-yellow-500' },
-    { title: 'Completed Orders',   value: completedCount,  icon: CheckCircle, color: 'bg-green-500' },
+    { title: 'Commandes en cours', value: processingCount, icon: Clock,       color: 'bg-yellow-500' },
+    { title: 'Commandes terminées',   value: completedCount,  icon: CheckCircle, color: 'bg-green-500' },
   ];
 
   // Préparation des données pour les graphiques
@@ -116,7 +116,7 @@ const DashboardPage: React.FC = () => {
 
         {/* PieChart Statuts */}
         <div className="bg-white p-6 rounded-lg shadow">
-          <h2 className="text-lg font-semibold mb-4">Order Status Distribution</h2>
+          <h2 className="text-lg font-semibold mb-4">Répartition des statuts de commande</h2>
           <div className="h-64">
             <ResponsiveContainer width="100%" height="100%">
               <PieChart>

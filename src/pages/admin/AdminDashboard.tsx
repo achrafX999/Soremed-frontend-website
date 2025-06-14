@@ -1,76 +1,53 @@
 "use client"
-
-import { Users, Package2, ClipboardList, TrendingUp, ShoppingCart } from "lucide-react"
+import React, { useEffect, useState } from 'react'
+import { Users, Package2, ClipboardList, ShoppingCart } from "lucide-react"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/components/ui/card"
+import api from '../../api/axios'
+
+interface TopProduct {
+  productName: string
+  totalQuantity: number
+}
+
+interface DashboardMetrics {
+  totalUsers: number
+  activeOrders: number
+  totalProducts: number
+  topProducts: TopProduct[]
+}
 
 export default function AdminDashboard() {
-  const stats = [
-    {
-      title: "Total Users",
-      value: "156",
-      change: "+12%",
-      icon: Users,
-      color: "bg-blue-500",
-    },
-    {
-      title: "Active Orders",
-      value: "23",
-      change: "+5%",
-      icon: ClipboardList,
-      color: "bg-green-500",
-    },
-    {
-      title: "Products",
-      value: "1,254",
-      change: "+3%",
-      icon: Package2,
-      color: "bg-purple-500",
-    },
-  ]
+  const [metrics, setMetrics] = useState<DashboardMetrics | null>(null)
+  const [loading, setLoading] = useState(true)
+  const [error, setError] = useState<string | null>(null)
 
-  const topProducts = [
-    {
-      id: 1,
-      name: "Amoxicillin 500mg",
-      unitsSold: 1250,
-      category: "Antibiotics",
-      trend: "+15%",
-    },
-    {
-      id: 2,
-      name: "Ibuprofen 200mg",
-      unitsSold: 980,
-      category: "Pain Relief",
-      trend: "+8%",
-    },
-    {
-      id: 3,
-      name: "Vitamin D3 1000IU",
-      unitsSold: 875,
-      category: "Supplements",
-      trend: "+22%",
-    },
-    {
-      id: 4,
-      name: "Metformin 500mg",
-      unitsSold: 720,
-      category: "Diabetes",
-      trend: "+5%",
-    },
-    {
-      id: 5,
-      name: "Lisinopril 10mg",
-      unitsSold: 650,
-      category: "Cardiovascular",
-      trend: "+12%",
-    },
-  ]
+  useEffect(() => {
+    api
+      .get<DashboardMetrics>('/admin/dashboard')
+      .then(res => setMetrics(res.data))
+      .catch(err => {
+        console.error(err)
+        setError('Failed to load dashboard metrics')
+      })
+      .finally(() => setLoading(false))
+  }, [])
+
+  const stats = metrics
+    ? [
+        { title: 'Total Users', value: metrics.totalUsers, icon: Users, color: 'bg-blue-500' },
+        { title: 'Active Orders', value: metrics.activeOrders, icon: ClipboardList, color: 'bg-green-500' },
+        { title: 'Products', value: metrics.totalProducts, icon: Package2, color: 'bg-purple-500' },
+      ]
+    : []
+
+  if (loading) return <div>Loading dashboard…</div>
+  if (error) return <div className="text-red-600">{error}</div>
 
   return (
     <div className="space-y-6 p-6">
       {/* Header without download button */}
       <div className="flex justify-between items-center">
-        <h1 className="text-3xl font-bold text-gray-900">Admin Dashboard</h1>
+        <h1 className="text-3xl font-bold text-gray-900">Tableau de bord administrateur</h1>
       </div>
 
       {/* Unified grid: stats + full-width Top Products */}
@@ -88,10 +65,8 @@ export default function AdminDashboard() {
                   <stat.icon className="h-6 w-6 text-white" />
                 </div>
               </div>
-              <div className="mt-4 flex items-center text-sm">
-                <TrendingUp className="h-4 w-4 text-green-500 mr-1" />
-                <span className="text-green-500 font-medium">{stat.change}</span>
-                <span className="text-muted-foreground ml-2">vs last month</span>
+              <div className="mt-4 text-sm text-muted-foreground">
+                Current totals
               </div>
             </CardContent>
           </Card>
@@ -109,33 +84,22 @@ export default function AdminDashboard() {
             </CardHeader>
             <CardContent>
               <div className="space-y-4">
-                {topProducts.map((product, index) => (
-                  <div key={product.id} className="space-y-2">
+                {metrics?.topProducts.map((product, index) => (
+                  <div key={index} className="space-y-2">
                     <div className="flex items-center justify-between">
                       <div className="flex items-center gap-3">
                         <div className="flex items-center justify-center w-6 h-6 rounded-full bg-primary text-primary-foreground text-xs font-semibold">
                           {index + 1}
                         </div>
-                        <div className="min-w-0 flex-1">
-                          <p className="text-sm font-medium truncate">{product.name}</p>
-                          <p className="text-xs text-muted-foreground">{product.category}</p>
-                        </div>
+                        <p className="text-sm font-medium truncate">{product.productName}</p>
                       </div>
-                      <div className="text-right">
-                        <p className="text-sm font-semibold">{product.unitsSold.toLocaleString()}</p>
-                        <div className="flex items-center gap-1">
-                          <TrendingUp className="h-3 w-3 text-green-500" />
-                          <span className="text-xs text-green-500">{product.trend}</span>
-                        </div>
-                      </div>
+                      <p className="text-sm font-semibold">{product.totalQuantity.toLocaleString()}</p>
                     </div>
                   </div>
                 ))}
               </div>
               <div className="mt-4 pt-4 border-t">
-                <p className="text-xs text-muted-foreground text-center">
-                  Based on sales data from the last 30 days
-                </p>
+                
               </div>
             </CardContent>
           </Card>

@@ -24,7 +24,7 @@ const Sidebar: React.FC = () => {
           }`}
         >
           <LayoutDashboard className="h-5 w-5 mr-3" />
-          Dashboard
+          Tableau de bord
         </Link>
         <Link
           to="/"
@@ -33,7 +33,7 @@ const Sidebar: React.FC = () => {
           }`}
         >
           <Pill className="h-5 w-5 mr-3" />
-          Search
+          Recherche
         </Link>
         
         <Link
@@ -43,7 +43,7 @@ const Sidebar: React.FC = () => {
           }`}
         >
           <ClipboardList className="h-5 w-5 mr-3" />
-          Order
+          Commande
         </Link>
         
         <Link
@@ -53,7 +53,7 @@ const Sidebar: React.FC = () => {
           }`}
         >
           <Activity className="h-5 w-5 mr-3" />
-          Tracking
+          Suivi
         </Link>
         
         
@@ -65,7 +65,7 @@ const Sidebar: React.FC = () => {
           }`}
         >
           <Newspaper className="h-5 w-5 mr-3" />
-          News & Updates
+          Actualités & mises à jour
         </Link>
 
         <Link
@@ -75,7 +75,7 @@ const Sidebar: React.FC = () => {
           }`}
         >
           <UserPlus className="h-5 w-5 mr-3" />
-          Register
+          Inscription
         </Link>
       </nav>
     </div>
