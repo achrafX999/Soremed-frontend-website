@@ -18,6 +18,14 @@ const NewsPage: React.FC = () => {
 
   const [loading, setLoading] = useState(true);
   const [error, setError]     = useState<string | null>(null);
+  const [expandedIds, setExpandedIds] = useState<number[]>([])
+  const TRUNCATE_LENGTH = 120
+  const toggleExpanded = (id: number) => {
+    setExpandedIds(prev =>
+      prev.includes(id) ? prev.filter(x => x !== id) : [...prev, id]
+    )
+  }
+
 
   useEffect(() => {
     (async () => {
@@ -103,9 +111,18 @@ const NewsPage: React.FC = () => {
                 </span>
               </div>
               <h3 className="mt-4 text-xl font-semibold">{item.title}</h3>
-              <p className="mt-2 text-gray-600">{item.description}</p>
-              <button className="mt-4 text-green-600 hover:text-green-800 font-medium">
-                En savoir plus →
+              <p className="mt-2 text-gray-600">
+                {expandedIds.includes(item.id)
+                  ? item.description
+                  : item.description.length > TRUNCATE_LENGTH
+                    ? `${item.description.slice(0, TRUNCATE_LENGTH)}…`
+                    : item.description}
+              </p>
+              <button
+                onClick={() => toggleExpanded(item.id)}
+                className="mt-4 text-green-600 hover:text-green-800 font-medium"
+              >
+                {expandedIds.includes(item.id) ? 'Voir moins' : 'En savoir plus →'}
               </button>
             </div>
           </div>
