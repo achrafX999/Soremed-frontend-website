@@ -25,12 +25,16 @@ pipeline {
     }
 
     stage('E2E Tests') {
-      steps {
-        // ici on ouvre un serveur X virtuel pour Cypress
-        xvfb(displayName: 'cypress', parallelScreens: 0) {
-          sh 'npx cypress run --headless'
+        steps {
+            // lance Cypress dans un serveur X virtuel sans plugin Jenkins
+            sh '''
+            xvfb-run --auto-servernum \
+                    --server-args="-screen 0 1280x1024x24" \
+                    npx cypress run --headless
+            '''
         }
-      }
+        }
+
     }
   }
 
