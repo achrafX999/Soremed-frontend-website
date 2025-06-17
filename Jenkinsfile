@@ -2,7 +2,7 @@ pipeline {
   agent any
 
   tools {
-    nodejs 'Node20'   
+    nodejs 'Node20'
   }
 
   stages {
@@ -26,7 +26,10 @@ pipeline {
 
     stage('E2E Tests') {
       steps {
-        sh 'npx cypress run --headless'
+        // ici on ouvre un serveur X virtuel pour Cypress
+        xvfb(displayName: 'cypress', parallelScreens: 0) {
+          sh 'npx cypress run --headless'
+        }
       }
     }
   }
