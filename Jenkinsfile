@@ -3,7 +3,7 @@ pipeline {
   agent any
 
   environment {
-    VITE_API_BASE_URL = 'http://localhost:8080/api'
+    VITE_API_BASE_URL = 'http://localhost:8081/api'
   }
 
   tools {
@@ -54,7 +54,7 @@ pipeline {
         dir('soremed-backend') {
           sh '''
             nohup java -jar target/*.jar \
-              --server.port=8080 > backend.log 2>&1 &
+              --server.port=8081 > backend.log 2>&1 &
             sleep 15
           '''
         }
