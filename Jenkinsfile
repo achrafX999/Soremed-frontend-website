@@ -6,8 +6,9 @@ pipeline {
   }
 
   tools {
+    jdk    'JDK21'    // ← votre nouvelle installation
+    maven  'M3'
     nodejs 'Node20'
-    maven  'M3'            // ← ton installation Maven
   }
 
   stages {
