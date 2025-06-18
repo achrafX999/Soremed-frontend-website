@@ -22,7 +22,7 @@ pipeline {
             $class: 'GitSCM',
             branches: [[ name: '*/master' ]],
             userRemoteConfigs: [[
-              url: 'https://github.com/achrafX999/Soremed-backend.git',
+              url: 'https://github.com/achrafX999/Soremed-backend-website',
               credentialsId: 'github-creds'
             ]]
           ])
