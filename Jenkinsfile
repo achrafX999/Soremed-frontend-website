@@ -3,7 +3,6 @@ pipeline {
   agent any
 
   environment {
-    // passe au front l'URL de ton API
     VITE_API_BASE_URL = 'http://localhost:8080/api'
   }
 
@@ -14,17 +13,9 @@ pipeline {
   }
 
   stages {
-
     stage('Checkout Frontend') {
       steps {
-        checkout([
-          $class: 'GitSCM',
-          branches: [[ name: '*/master' ]],
-          userRemoteConfigs: [[
-            url: 'https://github.com/achrafX999/Soremed-frontend-website.git',
-            credentialsId: 'github-creds'
-          ]]
-        ])
+        checkout scm
       }
     }
 
@@ -35,7 +26,7 @@ pipeline {
             $class: 'GitSCM',
             branches: [[ name: '*/master' ]],
             userRemoteConfigs: [[
-              url: 'https://github.com/achrafX999/Soremed-backend.git',
+              url: 'https://github.com/achrafX999/Soremed-backend-website',
               credentialsId: 'github-creds'
             ]]
           ])
@@ -70,11 +61,11 @@ pipeline {
       }
     }
 
-    stage('Preview Frontend') {
+    stage('Start Front Dev Server') {
       steps {
-        // utilise le proxy défini dans `preview` de vite.config.ts
+        // On utilise le "dev server" pour profiter du proxy
         sh '''
-          nohup npx vite preview --port 5173 > preview.log 2>&1 &
+          nohup npm run dev -- --port 5173 > dev.log 2>&1 &
           sleep 5
         '''
       }
