@@ -1,3 +1,4 @@
+// Jenkinsfile
 pipeline {
   agent any
 
@@ -6,14 +7,16 @@ pipeline {
   }
 
   tools {
-    jdk    'JDK21'    // ← votre nouvelle installation
+    jdk    'JDK21'
     maven  'M3'
     nodejs 'Node20'
   }
 
   stages {
     stage('Checkout Frontend') {
-      steps { checkout scm }
+      steps {
+        checkout scm
+      }
     }
 
     stage('Checkout Backend') {
@@ -31,7 +34,7 @@ pipeline {
       }
     }
 
-    stage('Build Front') {
+    stage('Build Frontend') {
       steps {
         sh 'npm ci'
         sh 'npm run build'
@@ -58,10 +61,11 @@ pipeline {
       }
     }
 
-    stage('Preview Front') {
+    stage('Start Front Dev Server') {
       steps {
+        // On utilise le "dev server" pour profiter du proxy
         sh '''
-          nohup npx vite preview --port 5173 > preview.log 2>&1 &
+          nohup npm run dev -- --port 5173 > dev.log 2>&1 &
           sleep 5
         '''
       }

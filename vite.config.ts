@@ -5,14 +5,16 @@ import tsconfigPaths from 'vite-tsconfig-paths';
 
 export default defineConfig(({ mode }) => {
   const env = loadEnv(mode, process.cwd(), '');
-  const apiBaseUrl: string = env.VITE_API_BASE_URL;
-  const backendUrl = apiBaseUrl.replace(/\/api\/?$/, '');
+  const apiBaseUrl: string = env.VITE_API_BASE_URL;         // ex. http://localhost:8080/api
+  const backendUrl = apiBaseUrl.replace(/\/api\/?$/, '');   // ex. http://localhost:8080
 
   return {
     plugins: [
       react(),
-      tsconfigPaths(),  // ← c'est lui qui active les alias @/...
+      tsconfigPaths(),  // active les alias @/...
     ],
+
+    // serveur de dev avec proxy
     server: {
       port: 5173,
       proxy: {
@@ -29,6 +31,25 @@ export default defineConfig(({ mode }) => {
         },
       },
     },
+
+    // preview statique aussi avec proxy
+    preview: {
+      port: 5173,
+      proxy: {
+        '/api': {
+          target: backendUrl,
+          changeOrigin: true,
+          secure: false,
+          rewrite: (path) => path.replace(/^\/api/, '/api'),
+        },
+        '/images/news': {
+          target: backendUrl,
+          changeOrigin: true,
+          secure: false,
+        },
+      },
+    },
+
     define: {
       'process.env.VITE_API_BASE_URL': JSON.stringify(apiBaseUrl),
     },
