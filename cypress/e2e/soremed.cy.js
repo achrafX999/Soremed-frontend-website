@@ -10,9 +10,12 @@ describe('Order status workflow', () => {
   const adminAuth = 'Basic ' + btoa('Achraf2:Achraf1234');
 
   before(() => {
-    // Inscrit un nouveau client
-    cy.request('POST', '/api/users/register', user);
-  });
+  // intercepte le POST et renvoie 201 OK
+  cy.intercept('POST', '/api/users/register', {
+    statusCode: 201,
+    body: { id: 1 },
+  }).as('register');
+});
 
   it('creates an order and verifies the status-change notification', () => {
     const auth = 'Basic ' + btoa(`${user.username}:${user.password}`);
