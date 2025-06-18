@@ -1,60 +1,73 @@
 pipeline {
   agent any
 
+  environment {
+    VITE_API_BASE_URL = 'http://localhost:8080/api'
+  }
+
   tools {
     nodejs 'Node20'
+    maven  'M3'            // ← ton installation Maven
   }
 
   stages {
-    stage('Checkout') {
+    stage('Checkout Frontend') {
+      steps { checkout scm }
+    }
+
+    stage('Checkout Backend') {
       steps {
-        checkout scm
+        dir('soremed-backend') {
+          checkout([
+            $class: 'GitSCM',
+            branches: [[ name: '*/master' ]],
+            userRemoteConfigs: [[
+              url: 'https://github.com/achrafX999/Soremed-backend.git',
+              credentialsId: 'github-creds'
+            ]]
+          ])
+        }
       }
     }
 
-    stage('Install deps') {
+    stage('Build Front') {
       steps {
         sh 'npm ci'
-      }
-    }
-
-    stage('Build') {
-      steps {
         sh 'npm run build'
       }
     }
 
-     stage('Preview') {
+    stage('Build Backend') {
       steps {
-        // démarre Vite en mode preview en arrière-plan
+        dir('soremed-backend') {
+          sh 'mvn clean package -DskipTests'
+        }
+      }
+    }
+
+    stage('Start Backend') {
+      steps {
+        dir('soremed-backend') {
+          sh '''
+            nohup java -jar target/*.jar \
+              --server.port=8080 > backend.log 2>&1 &
+            sleep 15
+          '''
+        }
+      }
+    }
+
+    stage('Preview Front') {
+      steps {
         sh '''
           nohup npx vite preview --port 5173 > preview.log 2>&1 &
-          sleep 5    # laisse le temps au serveur de démarrer
+          sleep 5
         '''
       }
     }
 
-    stage('Backend') {
-  steps {
-    // Positionne-toi dans ton dossier backend (ajuste le chemin si besoin)
-    dir('soremed-backend') {
-      // Compile et package ton backend (ici exemple Maven + Spring Boot)
-      sh 'mvn clean package -DskipTests'
-      // Lance-le sur le port 8080 en arrière-plan
-      sh '''
-        nohup java -jar target/*.jar \
-          --server.port=8080 > backend.log 2>&1 &
-        # Laisse le temps au serveur de démarrer
-        sleep 15
-      '''
-    }
-  }
-}
-
-
     stage('E2E Tests') {
       steps {
-        // lance Cypress dans un serveur X virtuel
         sh '''
           xvfb-run --auto-servernum \
                    --server-args="-screen 0 1280x1024x24" \
