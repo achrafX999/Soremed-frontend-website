@@ -1,6 +1,7 @@
 describe('Order status workflow', () => {
+  const username = `pharma${Date.now()}`;
   const user = {
-    username: 'pharma1230',
+    username,
     password: 'secret0',
     iceNumber: 'ICE0010',
     address: '1 rue Test0',
@@ -12,10 +13,11 @@ describe('Order status workflow', () => {
   before(() => {
     // Inscrit un nouveau client
     cy.request('POST', '/api/users/register', user);
+    cy.wrap(user).as('user');
   });
 
-  it('creates an order and verifies the status-change notification', () => {
-    const auth = 'Basic ' + btoa(`${user.username}:${user.password}`);
+  it('creates an order and verifies the status-change notification', function () {
+    const auth = 'Basic ' + btoa(`${this.user.username}:${this.user.password}`);
 
     // Récupère l’ID de l’utilisateur authentifié
     cy.request({
