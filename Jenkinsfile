@@ -91,18 +91,20 @@ pipeline {
     }*/
     stage('Docker Build & Push') {
   steps {
-    script {
-      def tag = "${BUILD_NUMBER}"
-      def registry = "ghcr.io/achrafx999"
+    withCredentials([string(credentialsId: 'ghcr-token', variable: 'CR_PAT')]) {
+      sh """
+        docker build -t ghcr.io/achrafx999/soremed-backend:${BUILD_NUMBER} soremed-backend
+        docker build -t ghcr.io/achrafx999/soremed-frontend:${BUILD_NUMBER} .
 
-      def backendImage = docker.build("${registry}/soremed-backend:${tag}", "soremed-backend")
-      backendImage.push()
+        echo \$CR_PAT | docker login ghcr.io -u achrafx999 --password-stdin
 
-      def frontendImage = docker.build("${registry}/soremed-frontend:${tag}", ".")
-      frontendImage.push()
+        docker push ghcr.io/achrafx999/soremed-backend:${BUILD_NUMBER}
+        docker push ghcr.io/achrafx999/soremed-frontend:${BUILD_NUMBER}
+      """
     }
   }
 }
+
 
 
     stage('Deploy to Staging') {
