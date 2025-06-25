@@ -93,6 +93,7 @@ pipeline {
   steps {
     sshagent(['vm-ssh-key']) {
       sh """
+        mkdir -p ~/.ssh
         ssh-keyscan -H 192.168.193.130 >> ~/.ssh/known_hosts
         ssh achraf@192.168.193.130 '
           cd ~/soremed-deploy &&
@@ -102,6 +103,7 @@ pipeline {
     }
   }
 }
+
 
   }
 
