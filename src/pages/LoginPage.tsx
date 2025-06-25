@@ -94,7 +94,7 @@ const LoginPage: React.FC = () => {
                   {/* Username */}
                   <div className="space-y-2">
                     <Label htmlFor="username" className="text-sm font-medium">
-                      Nom d’utilisateur
+                      Adresse Email
                     </Label>
                     <div className="relative">
                       <User className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-500 h-4 w-4" />
@@ -103,7 +103,7 @@ const LoginPage: React.FC = () => {
                         type="text"
                         autoComplete="username"
                         required
-                        placeholder="Votre nom d’utilisateur"
+                        placeholder="Votre Adresse Email"
                         value={username}
                         onChange={(e: React.ChangeEvent<HTMLInputElement>) => setUsername(e.target.value)}
                         className="pl-10"

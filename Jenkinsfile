@@ -89,6 +89,19 @@ pipeline {
         '''
       }
     }*/
+    stage('Deploy to Staging') {
+  steps {
+    sshagent(['vm-ssh-key']) {
+      sh """
+        ssh achraf@192.168.193.130 '
+          cd ~/soremed-deploy &&
+          ./deploy.sh ${BUILD_NUMBER}
+        '
+      """
+    }
+  }
+}
+
   }
 
   post {

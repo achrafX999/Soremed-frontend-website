@@ -150,7 +150,7 @@ const RegistrationPage: React.FC = () => {
               {/* Username */}
               <div className="space-y-2">
                 <Label htmlFor="username" className="text-sm font-medium">
-                  Nom d’utilisateur
+                  Adresse Email
                 </Label>
                 <div className="relative">
                   <User className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-500 h-4 w-4" />
@@ -158,7 +158,7 @@ const RegistrationPage: React.FC = () => {
                     type="text"
                     id="username"
                     name="username"
-                    placeholder="Votre nom d’utilisateur"
+                    placeholder="Votre adresse email"
                     value={formData.username}
                     onChange={handleChange}
                     className="pl-10"
