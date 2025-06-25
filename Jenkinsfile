@@ -89,19 +89,35 @@ pipeline {
         '''
       }
     }*/
-    stage('Deploy to Staging') {
+    stage('Docker Build & Push') {
   steps {
-    sshagent(['vm-ssh-key']) {
-      sh """
-        mkdir -p ~/.ssh
-        ssh-keyscan -H 192.168.193.130 >> ~/.ssh/known_hosts
-        ssh achraf@192.168.193.130 '
-          cd ~/soremed-deploy &&
-          ./deploy.sh ${BUILD_NUMBER}
-        '
-      """
+    script {
+      def tag = "${BUILD_NUMBER}"
+      def registry = "ghcr.io/achrafx999"
+
+      def backendImage = docker.build("${registry}/soremed-backend:${tag}", "soremed-backend")
+      backendImage.push()
+
+      def frontendImage = docker.build("${registry}/soremed-frontend:${tag}", ".")
+      frontendImage.push()
     }
   }
+}
+
+
+    stage('Deploy to Staging') {
+    steps {
+      sshagent(['vm-ssh-key']) {
+        sh """
+          mkdir -p ~/.ssh
+          ssh-keyscan -H 192.168.193.130 >> ~/.ssh/known_hosts
+          ssh achraf@192.168.193.130 '
+            cd ~/soremed-deploy &&
+            ./deploy.sh ${BUILD_NUMBER}
+          '
+        """
+      }
+    }
 }
 
 
