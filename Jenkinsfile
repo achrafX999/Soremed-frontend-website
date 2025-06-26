@@ -112,8 +112,8 @@ pipeline {
       sshagent(['vm-ssh-key']) {
         sh """
           mkdir -p ~/.ssh
-          ssh-keyscan -H 192.168.193.130 >> ~/.ssh/known_hosts
-          ssh achraf@192.168.193.130 '
+          ssh-keyscan -H 192.168.100.159 >> ~/.ssh/known_hosts
+          ssh achraf@192.168.100.159 '
             cd ~/soremed-deploy &&
             ./deploy.sh ${BUILD_NUMBER}
           '
